@@ -26,8 +26,20 @@ How we work. Change it only by agreement, and date the change.
 
 ### Tickets
 - Tracker: {{TRACKER}}. See `docs/tracker.md`.
-- Pipeline: grill → spec (`/to-spec`) → tickets (`/to-tickets`) → implement.
+- Pipeline: grill → spec → tickets → implement (skill names below).
+- Specs: {{SPEC_LOCATION}}
+  <!-- e.g. "inside the ticket; docs/specs/<slug>.md for multi-ticket features"
+       or "the Jira epic description" or "the parent GitHub issue" -->
 - Read the whole ticket (description, comments, linked work) before starting.
+
+### Skills
+| Role | Skill | If unavailable |
+|---|---|---|
+| grill | {{GRILL_SKILL}} | ask one question at a time with a recommended answer, until nothing is unclear |
+| spec | {{SPEC_SKILL}} | write goal, scope and non-goals, behaviour, acceptance criteria, risks |
+| tickets | {{TICKETS_SKILL}} | vertical slices, each demoable in one session; numbered list for approval first |
+| implement | {{IMPLEMENT_SKILL}} | read ticket → test first → implement → checks → commit per this agreement |
+<!-- Fill with the installed skill names (e.g. `/grilling`), or "none" to use the fallback. -->
 
 ### Branches, commits, PRs
 - Branching: {{BRANCHING_RULE}}
@@ -42,7 +54,9 @@ How we work. Change it only by agreement, and date the change.
 - {{TEST_RULE}}
   <!-- e.g. "Tests are mandatory for logic. A regression test must be shown failing
        without the fix before the fix is applied." -->
-- Verify behaviour yourself before handing over ({{VERIFY_METHOD}}).
+- Before handing over: {{VERIFY_METHOD}}
+  <!-- e.g. "run tests, lint and build, then give the user a short click-checklist
+       for the UI" or "run the e2e suite and paste the result" -->
 - Report real command output. Never call something green you did not run.
 
 ### Docs
@@ -59,5 +73,5 @@ How we work. Change it only by agreement, and date the change.
   thin result; do not retry the same model with the same brief.
 
 ## Adopted from claude-workflow-kit
-{{ADOPTED_PARTS}}  (kit: claude-workflow-kit@<commit sha>, {{DATE}})
+{{ADOPTED_PARTS}} (kit: claude-workflow-kit@{{KIT_SHA}}, {{DATE}})
 <!-- e.g. "workflow agreement, tickets (local), handover, agent routing" -->

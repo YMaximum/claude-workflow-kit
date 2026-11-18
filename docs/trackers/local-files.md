@@ -17,6 +17,15 @@ docs/tickets/
 - Front matter holds `status` (`todo | in-progress | in-review | done | blocked`),
   `labels`, `branch`, `pr`.
 
+## Specs
+A small feature's spec lives inside its ticket (Goal, Expected outcome, Acceptance
+criteria). A feature that spans several tickets gets `docs/specs/<slug>.md`, and each
+ticket links to it.
+
+## Committing to main (no PRs)
+Drop the `branch:` and `pr:` fields and the `in-review` status from the template;
+record the commit hashes in the progress log instead.
+
 ## Rules for Claude
 - `/to-tickets` writes one file per ticket from `_TEMPLATE.md`, after the user
   approves the numbered breakdown.

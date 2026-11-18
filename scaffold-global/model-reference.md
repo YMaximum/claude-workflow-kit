@@ -3,10 +3,9 @@ name: model-reference
 description: Models allowed for subagents, which task goes to which model, effort and escalation rules, and a log of observed results. Read before choosing a subagent model.
 ---
 
-Last checked: {{YYYY-MM-DD}}. Source: https://platform.claude.com/docs/en/models/overview
+Last checked: {{DATE}}. Source: https://platform.claude.com/docs/en/models/overview
 
-Only models covered by {{your plan}} are allowed. {{List any model that bills extra
-credits here as excluded.}}
+Only models covered by {{SUBSCRIPTION_PLAN}} are allowed. Excluded: {{EXCLUDED_MODELS}}.
 
 ## Allowed models
 | Agent `model` | Use | Status |

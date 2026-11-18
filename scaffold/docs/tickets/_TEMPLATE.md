@@ -3,8 +3,9 @@ id: APP-000
 title: <short imperative title>
 status: todo        # todo | in-progress | in-review | done | blocked
 labels: []          # e.g. ready-for-agent, needs-triage
-branch:             # filled when work starts
-pr:                 # filled when the PR is opened
+blocked_by: []      # ticket ids that must be done first
+branch:             # filled when work starts   (drop if committing to main)
+pr:                 # filled when the PR is opened (drop if no PRs; drop in-review too)
 ---
 
 # APP-000: <title>
