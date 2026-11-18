@@ -70,8 +70,8 @@ Describe ─▶ Grill #1 ─▶ Spec ─▶ Tickets ─▶ Implement ─▶ Comm
    shown as a numbered list for approval before creation (`/to-tickets`).
 5. **Implement**: fresh session reads the whole ticket; branch first; failing test
    first; cheap subagents for wide work; full checks; docs updated.
-6. **Commit and PR** per the agreement (commit to `main` and skip the PR if no
-   branching was agreed).
+6. **Commit and PR** per the agreement (commit to `main` and skip the PR only if
+   nothing was agreed and the repo has no existing branching convention).
 7. **Grill #2**: "grill me on the questions you have from implementing this
    ticket." Claude asks instead of guessing; answers go into the ticket.
 8. **Update the branch** with the decisions.

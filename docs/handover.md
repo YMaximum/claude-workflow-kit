@@ -12,6 +12,16 @@ session can pick up with one word.
 
 Template: `scaffold/HANDOVER.md`. Skill: `scaffold/.claude/skills/handover/`.
 
+## Solo vs team
+- **Solo:** commit `HANDOVER.md`; it travels with the repo.
+- **Team:** make it **per developer** and add it to `.gitignore`. It changes after
+  every commit on every branch, so a committed copy causes merge conflicts and
+  shows one person's half-finished state to everyone. Shared, team-facing status
+  belongs in the tracker (or an existing shared status file), not here.
+- **Existing status file** (e.g. `docs/STATUS.md` that teammates read): usually
+  keep it as the shared status and add a local `HANDOVER.md` for session state;
+  the session-start rule then reads the shared file first, then `HANDOVER.md`.
+
 ## The loop
 1. Claude works on a ticket.
 2. After each commit or subagent result, Claude updates `HANDOVER.md`.

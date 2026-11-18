@@ -26,14 +26,20 @@ Tell Claude, from the project root:
    approval. Existing skills/agents are kept; name clashes are reported, not replaced.
 5. **Bootstrap state.** Writes `HANDOVER.md` from the current
    situation: open branches, uncommitted work, open PRs and tickets. The first
-   `continue` works immediately.
-6. **Optional extras.** Turn a backlog or TODO list into tickets (`/to-tickets`);
+   `continue` works immediately. In a team repo it is per developer and gitignored;
+   an existing shared status file (e.g. `docs/STATUS.md`) is kept and asked about.
+6. **Your work in progress is safe.** If the tree has uncommitted changes, the setup
+   happens in a separate git worktree on its own branch; your branch and files are
+   not touched.
+7. **Optional extras.** Turn a backlog or TODO list into tickets (`/to-tickets`);
    wrap sibling repos in a home folder (`docs/home-pattern.md`); install the
    global routing rules.
-7. **Dry run.** Picks one small real task and walks it to an approved plan.
+8. **Dry run.** Picks one small real task and walks it to an approved plan, in the
+   setup worktree if the setup is not merged yet.
 
 ## What it never does
 - Overwrite or delete existing instructions, skills or agents.
 - Rename branches, rewrite history, or change CI.
+- Stash, reset, switch or commit your uncommitted work.
 - Commit the setup without your approval (it follows the branching rule it just
   wrote down, so the setup can arrive as its own PR).

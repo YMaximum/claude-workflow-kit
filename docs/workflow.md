@@ -53,8 +53,8 @@ epic description, or a parent GitHub issue).
 6. Update docs in the same change. Update `HANDOVER.md` after every commit.
 
 ## 6. Commit and PR (Claude)
-- Commit to the branch the agreement names. If no branching was agreed, commit to
-  `main` and skip the PR.
+- Commit to the branch the agreement names. Only if there is no agreement and no
+  existing convention (e.g. a `develop` branch) commit to `main` and skip the PR.
 - Commit messages explain **why**.
 - PR body stands alone: what, why, how it was verified (real output), what the
   reviewer should check by hand, merge order if several repos.

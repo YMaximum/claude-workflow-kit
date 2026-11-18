@@ -6,12 +6,20 @@ Good for teams that already plan in Jira.
 ## Setup
 1. Connect the Atlassian MCP server: in claude.ai, add the Atlassian connector
    (it is then available in Claude Code), or follow Atlassian's MCP setup docs for a
-   local server. Authorize when prompted.
+   local server. Authorize when prompted. This is a user action, and a claude.ai
+   connector is account-wide, not per project. Until it is connected, keep specs
+   and draft tickets in `HANDOVER.md` or `docs/specs/` and create the issues later.
 2. Check: ask Claude to "list the Jira projects I can see". Note the project key
    (e.g. `APP`) and the site/cloud id in the project's `CLAUDE.md`.
 3. Record in the project's `docs/tracker.md`: project key, board, the issue types you use,
    the label names (`ready-for-agent`, `needs-triage`), and any custom field ids
    (story points, etc.) Claude must fill.
+
+## Specs and keys
+- Specs: the epic (or parent issue) description; long specs may also live in
+  `docs/specs/<slug>.md` linked from the epic.
+- Jira assigns issue keys on creation. Never invent a key for a ticket that does
+  not exist yet; refer to drafts by title.
 
 ## Rules for Claude
 - `/to-tickets` creates issues (an epic or parent per spec, one child per slice)

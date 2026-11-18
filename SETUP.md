@@ -44,11 +44,17 @@ Infer before you ask. Collect what exists:
 - `git remote -v`; if the remote is GitHub and `gh auth status` succeeds:
   `gh pr list --state merged -L 10` for PR target and title style. Otherwise skip
   and ask in step 4.
-- package/build files and CI configs: install, dev, test, lint commands
+- package/build files and CI configs: install, dev, test, lint commands. Check that
+  each inferred command can actually run (dependencies installed, config present);
+  flag the ones that cannot instead of recording them as working.
 - ticket keys in branch names and commits (e.g. `ABC-12`): tracker and key prefix
 - sibling folders that are git repos: multi-repo?
 - `~/.claude/CLAUDE.md`, `~/.claude/model-reference.md`: global rules present?
-- installed skills (the skill list you can see): which workflow skills exist?
+- installed skills: the skills available in *this* session, which are the user's
+  own setup. Note which workflow skills exist (often `grilling`, `tdd`; names change).
+- working tree: `git status --short`. Uncommitted work belongs to the user: never
+  stash, reset, switch branches or commit it. Note it for step 6.
+- an existing status/notes file that sessions are told to read (e.g. `docs/STATUS.md`).
 
 For a large project, delegate the reading to a cheap read-only subagent and ask
 for a short report. Show the user a short summary of what you inferred.
@@ -68,9 +74,10 @@ that question.
 | What to adopt (all, or a subset) | ask |
 | `{{PROJECT_NAME}}`, `{{ONE_LINE_DESCRIPTION}}` | README / package file; confirm |
 | `{{INSTALL_COMMAND}}` `{{DEV_COMMAND}}` `{{TEST_COMMAND}}` `{{LINT_COMMAND}}` | package/build files; ask if none |
-| `{{TRACKER}}`, key prefix, site/project ids, labels | audit (ticket keys) + ask; then the matching `docs/trackers/*.md` |
+| `{{TRACKER}}`, key prefix, site/project ids | audit (ticket keys) + ask; then the matching `docs/trackers/*.md` |
+| Labels (`ready-for-agent`, `needs-triage`, `blocked`) | ask whether to use them, or map to the team's existing labels |
 | `{{SPEC_LOCATION}}` | from the tracker doc (local: in the ticket, `docs/specs/` for multi-ticket features) |
-| `{{BRANCHING_RULE}}` | audit; keep the existing convention. No history: recommend `main` for solo, `<KEY>-<n>-<slug>` + PR for teams |
+| `{{BRANCHING_RULE}}` | audit; keep the existing convention (a `develop` branch means branch from and PR to it). Only with no convention at all: recommend `main` for solo, `<KEY>-<n>-<slug>` + PR for teams |
 | `{{COMMIT_STYLE}}` | audit (`git log`); confirm |
 | `{{PR_RULE}}` | audit (PR target, title style) + who merges (default: the user). `main`-only: "no PRs" |
 | `{{TEST_RULE}}` | ask: test-first required? regression test shown failing first? |
@@ -80,7 +87,10 @@ that question.
 | `{{ENV_DIR}}` | Home mode only: where canonical env files live outside the repos |
 | `{{PRODUCT_NAME}}` and the repo-map rows (`{{repo-api}}`, `{{stack}}`, ...) | Home mode only: one row per sibling repo, from its README, package files and `git branch -a` |
 | `{{SUBSCRIPTION_PLAN}}`, `{{EXCLUDED_MODELS}}` | ask: "Which models does your plan include? Any that bill extra?" Default: haiku, sonnet, opus allowed; none excluded |
-| Global rules in `~/.claude/` or project-only | ask |
+| Global rules in `~/.claude/` or project-only | ask. Project-only: put the routing rules in the project `CLAUDE.md` and skip `model-reference.md` (or keep it at `docs/model-reference.md`) |
+| `HANDOVER.md` committed or per-developer | solo: committed. Team: recommend per-developer and gitignored (see `docs/handover.md`), with any shared status file kept as is |
+| Existing status file vs `HANDOVER.md` | ask, offering: (a) keep it as the shared team status and add a local `HANDOVER.md`; (b) replace it with `HANDOVER.md`; (c) keep only it and point the handover skill at it |
+| Ticket key for the setup commit | if branches need a ticket key: ask for one (or a "chore" branch name the team accepts) |
 | Docs language | the user's language unless they say otherwise |
 | `{{DATE}}` | today |
 | `{{ADOPTED_PARTS}}` | the adoption answer (e.g. "all" or "handover, agent routing") |
@@ -117,12 +127,19 @@ Wait for approval. Adjust and re-present if asked.
 - After writing, grep the project (and `~/.claude/` files you wrote) for `{{` and
   `<!--`; nothing may remain.
 
+**Uncommitted work in the tree.** Do the setup in a separate git worktree on a new
+branch (`git worktree add ../<repo>-setup -b <setup-branch> <base-branch>`), or ask the
+user to commit first. Never stash, switch or reset the user's tree.
+
 **Never overwrite.** Existing files are merged:
 - Append new sections; keep existing rules.
 - If an existing rule conflicts with a new one (e.g. a different session-start
   routine, or branching), show both and ask which wins. The `Session start` rule
   (read `HANDOVER.md`) must end up present, or handover will not work.
-- Existing skills or agents with the same name: keep theirs, report the clash.
+- Existing skills or agents with the same name: keep theirs, report the clash, and
+  rewrite the routing text in `CLAUDE.md` to describe *their* agent (its real model
+  and purpose), e.g. "use `scout` (sonnet) for searches, or pass `model: haiku` for
+  plain scans".
 - `~/.claude/` files: same rules.
 
 **Home folder** (if chosen): first create the parent with `scaffold-home/CLAUDE.md`
@@ -148,20 +165,26 @@ The workflow works without the plugin; the skills just make it consistent.
 - Local: create `docs/tickets/`.
 - GitHub: `gh auth status` (the user runs `! gh auth login` if needed); create the
   labels listed in the plan.
-- Jira: help the user connect the Atlassian MCP (`docs/trackers/jira.md`); confirm
-  it works by listing their projects.
+- Jira: the user connects the Atlassian connector (`docs/trackers/jira.md`); it is
+  account-wide, not per project. Confirm by listing their projects. If it is not
+  connected yet, continue: keep specs and draft tickets in `HANDOVER.md` (or
+  `docs/specs/`) and create the Jira issues once it is connected. Jira assigns issue
+  keys; never invent one.
 
 **Commit.** If no git repo, `git init`. Commit the setup following the branching
 rule just agreed (its own PR if PRs are used). Approval of a plan that lists the
 commit covers it; otherwise ask first.
 
 ## 7. Verify with a dry run
+Run it where the new `CLAUDE.md` exists: the setup worktree/branch if the setup is
+not merged yet (tell the user it takes effect for everyone after merge).
 Ask the user for one small real task (or suggest one). Walk it through the flow up
 to an approved plan: describe → grill → spec → ticket(s). Plan mode is optional
 here; just write nothing until the spec and the ticket breakdown are approved.
 Stop there unless the user wants to go on. Then confirm:
 - `CLAUDE.md` has the Session start rule, so a fresh session reads `HANDOVER.md`;
-- the ticket exists in the tracker with dated decisions;
+- the ticket exists in the tracker with dated decisions (or, if the tracker is not
+  connected yet, the draft is recorded with a note to create it later);
 - the user knows the phrases: grill (or the mapped skill name), `handover`, `continue`.
 
 ## 8. Report
