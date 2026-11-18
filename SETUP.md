@@ -50,6 +50,9 @@ Infer before you ask. Collect what exists:
 - ticket keys in branch names and commits (e.g. `ABC-12`): tracker and key prefix
 - sibling folders that are git repos: multi-repo?
 - `~/.claude/CLAUDE.md`, `~/.claude/model-reference.md`: global rules present?
+- tracker tooling: `gh --version` and `gh auth status`; whether Atlassian/Jira MCP
+  tools are available in this session. Report what is missing; it gets set up in
+  step 6, not assumed.
 - installed skills: the skills available in *this* session, which are the user's
   own setup. Note which workflow skills exist (often `grilling`, `tdd`; names change).
 - working tree: `git status --short`. Uncommitted work belongs to the user: never
@@ -109,6 +112,7 @@ run     gh label create ready-for-agent / needs-triage / blocked
 append  ~/.claude/CLAUDE.md           orchestrator rules (only if chosen)
 create  ~/.claude/model-reference.md  with the user's models (only if chosen)
 user    install workflow skills       see step 6
+user    connect the tracker           only what is missing, e.g. "install gh, then ! gh auth login"
 commit  "chore: adopt claude workflow" on the agreed branch (asks first)
 ```
 Wait for approval. Adjust and re-present if asked.
@@ -161,12 +165,18 @@ names to the four roles and fill the **Skills** table in `CLAUDE.md`:
 
 The workflow works without the plugin; the skills just make it consistent.
 
-**Tracker setup**
-- Local: create `docs/tickets/`.
-- GitHub: `gh auth status` (the user runs `! gh auth login` if needed); create the
-  labels listed in the plan.
-- Jira: the user connects the Atlassian connector (`docs/trackers/jira.md`); it is
-  account-wide, not per project. Confirm by listing their projects. If it is not
+**Tracker setup.** Check before assuming. For every missing piece, explain the
+step in plain words, give the exact command or clicks from the tracker doc, and
+wait for the user to say it is done; then re-check. Commands that need the user's
+own login, they run with a leading `!` (e.g. `! gh auth login`).
+- Local: create `docs/tickets/`. Nothing else is needed.
+- GitHub (`docs/trackers/github-issues.md`, "Setup"): `gh --version` → install if
+  missing; `gh auth status` → log in if needed; `gh repo view` → create or get
+  access to the repo; `gh issue list -L 1` → issues enabled; then the labels.
+- Jira (`docs/trackers/jira.md`, "Setup"): check whether Atlassian/Jira tools are
+  available in this session; if not, guide the user through connecting (claude.ai
+  connector or `claude mcp add`), including the admin-approval case. A claude.ai
+  connector is account-wide, not per project. Confirm by listing their projects. If it is not
   connected yet, continue: keep specs and draft tickets in `HANDOVER.md` (or
   `docs/specs/`) and create the Jira issues once it is connected. Jira assigns issue
   keys; never invent one.
