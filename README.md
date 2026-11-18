@@ -12,10 +12,10 @@ Doubles as a scaffold for your next project.
 Open Claude Code in your project folder and say one of these:
 
 **New project**
-> Read https://github.com/YMaximum/claude-workflow-kit/blob/main/SETUP.md and follow it to set up this project.
+> Read https://raw.githubusercontent.com/YMaximum/claude-workflow-kit/main/SETUP.md and follow it to set up this project.
 
 **Existing project**
-> Read https://github.com/YMaximum/claude-workflow-kit/blob/main/SETUP.md and adopt this workflow in this existing project.
+> Read https://raw.githubusercontent.com/YMaximum/claude-workflow-kit/main/SETUP.md and adopt this workflow in this existing project.
 
 Claude reads the guide, looks at your project, asks you a few questions (tracker,
 branching, tests, models...), shows a plan, and installs only after you approve.
@@ -38,8 +38,8 @@ Nothing existing is overwritten.
 | [scaffold-global/](scaffold-global/) | `~/.claude/CLAUDE.md` routing rules + `model-reference.md` |
 
 ## Using it as your own scaffold
-Clone it once, then for each new project tell Claude:
-> Use ~/claude-workflow-kit/SETUP.md to set up this project.
+Clone it once (e.g. to `~/claude-workflow-kit`), then for each project tell Claude:
+> Use ~/claude-workflow-kit/SETUP.md to set up this project (skip the clone step).
 
 Improve the kit as you learn: update the scaffold and the observed-results log in
 `model-reference.md`, and the next project starts better.

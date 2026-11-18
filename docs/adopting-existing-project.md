@@ -5,7 +5,7 @@ For a project that already exists but does not follow this pattern yet. The idea
 existing is overwritten.
 
 Tell Claude, from the project root:
-> Read https://github.com/YMaximum/claude-workflow-kit/blob/main/SETUP.md and adopt this workflow in this existing project.
+> Read https://raw.githubusercontent.com/YMaximum/claude-workflow-kit/main/SETUP.md and adopt this workflow in this existing project.
 
 ## What Claude does
 1. **Audit (read-only).** Infers the current conventions instead of asking:

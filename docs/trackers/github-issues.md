@@ -19,7 +19,7 @@ already lives on GitHub: issues, branches and PRs link to each other.
   using the sections of `scaffold/docs/tickets/_TEMPLATE.md`, after the user approves
   the numbered breakdown. A parent "map" issue lists the children as a task list.
 - Read a ticket fully before starting: `gh issue view <n> --comments`.
-- Branch: `<n>-<kebab-slug>`; the PR body contains `Closes #<n>`.
+- Branch: keep the existing convention; if none, `<n>-<kebab-slug>`. The PR body contains `Closes #<n>`.
 - Grill answers: post as an issue comment headed **Decisions (YYYY-MM-DD)**.
 - Handover / progress: a short issue comment headed **Progress**.
 - Never close issues by hand when a PR will close them.

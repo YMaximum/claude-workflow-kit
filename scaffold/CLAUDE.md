@@ -25,7 +25,7 @@ How we work. Change it only by agreement, and date the change.
 - Record every decision in the ticket, dated.
 
 ### Tickets
-- Tracker: {{TRACKER}}. See `docs/workflow/tracker.md`.
+- Tracker: {{TRACKER}}. See `docs/tracker.md`.
 - Pipeline: grill → spec (`/to-spec`) → tickets (`/to-tickets`) → implement.
 - Read the whole ticket (description, comments, linked work) before starting.
 
@@ -59,5 +59,5 @@ How we work. Change it only by agreement, and date the change.
   thin result; do not retry the same model with the same brief.
 
 ## Adopted from claude-workflow-kit
-{{ADOPTED_PARTS}}
+{{ADOPTED_PARTS}}  (kit: claude-workflow-kit@<commit sha>, {{DATE}})
 <!-- e.g. "workflow agreement, tickets (local), handover, agent routing" -->

@@ -5,8 +5,11 @@ A skill is a packaged instruction set Claude loads on demand, invoked as
 work" into something every session does the same way.
 
 ## The core four (Matt Pocock's collection)
-Source: https://github.com/mattpocock/skills. Install it as a Claude Code plugin
-by following that repo's README.
+Source: https://github.com/mattpocock/skills. Install it as a Claude Code plugin,
+usually `/plugin marketplace add mattpocock/skills` and then installing from
+`/plugin`; follow that repo's README if this differs. The workflow also works
+without the plugin: `docs/workflow.md` describes each step, so Claude can do it
+directly (see the fallback table in `SETUP.md` step 6).
 
 | Role in the workflow | Skill (name may differ by version) | Output |
 |---|---|---|

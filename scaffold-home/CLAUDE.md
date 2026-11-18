@@ -27,5 +27,5 @@ editing files in that repo.
 - Env files: never commit them; keep canonical copies outside the repos ({{ENV_DIR}}).
 
 ## Workflow agreement
-{{Paste or link the workflow agreement section from scaffold/CLAUDE.md here;
+{{The workflow agreement section from scaffold/CLAUDE.md goes here, filled in by SETUP;
   it applies to every repo.}}

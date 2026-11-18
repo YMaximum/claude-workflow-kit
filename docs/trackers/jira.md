@@ -9,7 +9,7 @@ Good for teams that already plan in Jira.
    local server. Authorize when prompted.
 2. Check: ask Claude to "list the Jira projects I can see". Note the project key
    (e.g. `APP`) and the site/cloud id in the project's `CLAUDE.md`.
-3. Record in `docs/workflow/tracker.md`: project key, board, the issue types you use,
+3. Record in the project's `docs/tracker.md`: project key, board, the issue types you use,
    the label names (`ready-for-agent`, `needs-triage`), and any custom field ids
    (story points, etc.) Claude must fill.
 
@@ -19,12 +19,12 @@ Good for teams that already plan in Jira.
   `scaffold/docs/tickets/_TEMPLATE.md` in the description.
 - Read a ticket fully before starting: description, all comments, sub-tasks, linked
   issues, and earlier branches/PRs that mention the key.
-- Branch: `<KEY>-<number>-<kebab-slug>`. PR title: `<KEY>-<number>: <summary>`.
+- Branch: keep the project's existing convention; if none, `<KEY>-<number>-<kebab-slug>`. PR title: `<KEY>-<number>: <summary>`.
 - Grill answers: a comment headed **Decisions (YYYY-MM-DD)**.
 - Handover between tickets: a comment headed **Handing on from <KEY>-<n>** on each
   successor ticket: new names and signatures, inherited decisions, what was
   deliberately left undone, anything the ticket got wrong.
-- Status: if branch/PR automation moves tickets, never transition by hand unless it
+- Status: ask whether branch/PR automation moves tickets. If it does, never transition by hand unless it
   failed, and say so when you do.
 
 ## Finding work

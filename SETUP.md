@@ -1,107 +1,147 @@
 # SETUP: instructions for Claude
 
 **You are Claude, and the user asked you to set up this workflow.** Follow these
-steps in order. Talk with the user in the language they write in. Do not write any
-file until step 5 is approved.
+steps in order. Talk with the user in the language they write in. Write no file
+until the plan in step 5 is approved.
 
-Repo raw base (for fetching files when you are not inside a clone):
-`https://raw.githubusercontent.com/YMaximum/claude-workflow-kit/main/`
-Easiest: `git clone https://github.com/YMaximum/claude-workflow-kit /tmp/claude-workflow-kit`
-(or any scratch directory) and read from there.
+Get the kit first, into a scratch directory (not the user's project):
+```
+git clone --depth 1 https://github.com/YMaximum/claude-workflow-kit <scratch>/claude-workflow-kit
+```
+If cloning is impossible, fetch files from the raw base
+`https://raw.githubusercontent.com/YMaximum/claude-workflow-kit/main/<path>`.
+
+**Precedence, everywhere below:** the project's existing conventions and the user's
+answers win over the kit's examples. The kit's names (`APP-000`, `develop`,
+`<KEY>-<n>-<slug>`) are examples, never requirements.
 
 ---
 
 ## 1. Learn the workflow
-Read `GUIDE.md` fully, then skim `docs/`. You will apply it, so understand
-the "why" of each part: workflow agreement, skills, the flow with three grill
-points, tickets, agent routing, home pattern, handover.
+Read `GUIDE.md` fully, then the `docs/` files. Understand why each part exists:
+workflow agreement, skills, the flow with three grill points, tickets, agent
+routing, home pattern, handover.
 
 ## 2. Pick the mode
-Ask (or infer from the request):
-- **New**: an empty or brand-new project.
-- **Adopt**: an existing project that does not use this workflow yet.
-  Read `docs/adopting-existing-project.md`.
+- **New**: the folder has no project code yet (empty, or only a README).
+- **Adopt**: the folder has existing code, with or without a `CLAUDE.md`.
+  Also read `docs/adopting-existing-project.md`.
+- **Home**: the user wants several repos under one parent folder
+  (`docs/home-pattern.md`). Combine with New or Adopt for each repo.
 
-## 3. Audit (Adopt mode, and New mode if a folder already exists)
-Read-only. Infer before you ask. Collect:
-- existing `CLAUDE.md`, `AGENTS.md`, `.claude/` (skills, agents, settings)
-- `git branch -a`, `git log --oneline -30` → default/dev branch, branch naming, commit style
-- `gh pr list --state merged -L 10` if `gh` works → PR target and title style
-- package/build files and CI configs → install, dev, test, lint commands
-- ticket keys in branches/commits → which tracker is in use
-- sibling folders that are git repos → multi-repo?
-- `~/.claude/CLAUDE.md` and `~/.claude/model-reference.md` → global rules already present?
+If the folder is not a git repo, plan a `git init` (step 5 lists it).
 
-Use the `scout` approach for this (cheap subagent, short report) if the project is
-large. Summarise what you found in a short list for the user.
+## 3. Audit (read-only)
+Infer before you ask. Collect what exists:
+- `CLAUDE.md`, `AGENTS.md`, `.claude/` (skills, agents, settings)
+- `git branch -a`, `git log --oneline -30`: default/dev branch, branch naming,
+  commit style
+- `git remote -v`; if the remote is GitHub and `gh auth status` succeeds:
+  `gh pr list --state merged -L 10` for PR target and title style. Otherwise skip
+  and ask in step 4.
+- package/build files and CI configs: install, dev, test, lint commands
+- ticket keys in branch names and commits (e.g. `ABC-12`): tracker and key prefix
+- sibling folders that are git repos: multi-repo?
+- `~/.claude/CLAUDE.md`, `~/.claude/model-reference.md`: global rules present?
+- installed skills (the skill list you can see): which workflow skills exist?
+
+For a large project, delegate the reading to a cheap read-only subagent and ask
+for a short report. Show the user a short summary of what you inferred.
 
 ## 4. Grill the user
-One question at a time, each with your recommended answer. Confirm what the audit
-inferred; ask only about gaps and conflicts. Cover:
-1. **What to adopt**: everything, or a subset (workflow agreement, tickets, skills,
-   agent routing, home pattern, handover). Partial adoption is fine.
-2. **Tracker**: Jira (Atlassian MCP), GitHub Issues (`gh`), or local files.
-   Read the matching `docs/trackers/*.md`.
-3. **Branching**: dev branch + PRs (which branch? naming?), or commit to `main`.
-   Default if the user has no preference: commit to `main` for a solo project,
-   `<TICKET>-<slug>` + PR for a team.
-4. **Commits and PRs**: commit style; who merges (default: the user).
-5. **Tests and verification**: test command; is test-first required; how is
-   user-facing behaviour verified (manual, e2e tool, browser).
-6. **Repo shape**: single repo, monorepo, or several repos (→ home folder,
-   `docs/home-pattern.md`).
-7. **Models**: which models their subscription allows for subagents, and any that
-   must not be used (e.g. ones billed as extra credits).
-8. **Global rules**: install the orchestrator rules in `~/.claude/` too, or keep
-   everything project-local.
-9. **Language** for the project docs and tickets.
+One question at a time, each with your recommended answer. Confirm inferences;
+ask only about gaps and conflicts. Stop when every row of the table below has a value.
 
-Stop when every placeholder in the templates has an answer.
+| Placeholder / decision | Where the value comes from |
+|---|---|
+| What to adopt (all, or a subset) | ask |
+| `{{PROJECT_NAME}}`, `{{ONE_LINE_DESCRIPTION}}` | README / package file; confirm |
+| `{{INSTALL_COMMAND}}` `{{DEV_COMMAND}}` `{{TEST_COMMAND}}` `{{LINT_COMMAND}}` | package/build files; ask if none |
+| `{{TRACKER}}`, key prefix, site/project ids, labels | audit (ticket keys) + ask; then the matching `docs/trackers/*.md` |
+| `{{BRANCHING_RULE}}` | audit; keep the existing convention. No history: recommend `main` for solo, `<KEY>-<n>-<slug>` + PR for teams |
+| `{{COMMIT_STYLE}}` | audit (`git log`); confirm |
+| `{{PR_RULE}}` | audit (PR target, title style) + who merges (default: the user). `main`-only: "no PRs" |
+| `{{TEST_RULE}}` | ask: test-first required? regression test shown failing first? |
+| `{{VERIFY_METHOD}}` | ask: manual, e2e tool, browser, CLI |
+| Tracker automation (does a branch/PR move tickets?) | ask (Jira / GitHub) |
+| Repo shape (single, monorepo, home folder) and `{{ENV_DIR}}` | audit (sibling repos) + ask |
+| Models allowed for subagents, models to avoid | ask: "Which models does your plan include? Any that bill extra?" Default: haiku, sonnet, opus all allowed |
+| Global rules in `~/.claude/` or project-only | ask |
+| Docs language | the user's language unless they say otherwise |
+| `{{DATE}}` | today |
+| `{{ADOPTED_PARTS}}` | the adoption answer + `kit: claude-workflow-kit@<commit sha>, <date>` |
 
 ## 5. Present the plan
-List every file you will create or change, with one line each, for example:
+List every action, one line each. Example (GitHub Issues, adopt mode):
 ```
-create  CLAUDE.md                         (from scaffold/CLAUDE.md, filled)
-append  CLAUDE.md                         (existing: add sections X, Y; diff shown)
-create  HANDOVER.md                       (bootstrapped from current state)
-create  docs/tickets/_TEMPLATE.md         (local tracker)
-create  docs/workflow/tracker.md          (from docs/trackers/local-files.md, filled)
+append  CLAUDE.md                     sections: Session start, Workflow agreement, Agent routing (diff shown)
+create  HANDOVER.md                   bootstrapped from open branches / uncommitted work / open PRs
+create  docs/tracker.md               from docs/trackers/github-issues.md, examples rewritten with real values
 create  .claude/agents/scout.md, implementer.md
 create  .claude/skills/handover/SKILL.md
-create  ~/.claude/model-reference.md      (global, filled with their models)
-install mattpocock skills plugin          (user runs /plugin; see docs/skills.md)
+run     gh label create ready-for-agent / needs-triage / blocked
+append  ~/.claude/CLAUDE.md           orchestrator rules (only if chosen)
+create  ~/.claude/model-reference.md  with the user's models (only if chosen)
+user    install workflow skills       see step 6
+commit  "chore: adopt claude workflow" on the agreed branch (asks first)
 ```
 Wait for approval. Adjust and re-present if asked.
 
 ## 6. Install
-- Copy templates from `scaffold/` (and `scaffold-home/`, `scaffold-global/` if
-  chosen); replace every `{{PLACEHOLDER}}`; delete the guidance HTML comments.
-- `docs/workflow/tracker.md` = the chosen `docs/trackers/<tracker>.md`, filled with
-  their project key, labels, and paths.
-- **Never overwrite** an existing file. Merge: append the new sections, keep
-  existing rules, and show the diff before writing. Existing skills or agents with
-  the same name: keep theirs, report the clash.
-- Global files in `~/.claude/`: same rule; append, never replace.
-- Skills: tell the user how to install the Matt Pocock collection (it needs their
-  action in the `/plugin` UI). After install, map installed skill names onto the
-  four roles (grill, spec, tickets, implement) and write the mapping into
-  `CLAUDE.md`.
-- Tracker setup: Jira → help them connect the Atlassian MCP; GitHub → check
-  `gh auth status`, create the labels; local → create `docs/tickets/`.
-- Adopt mode: fill `HANDOVER.md` from the audit (open branches,
-  uncommitted work, open PRs or tickets).
-- Commit the setup following the branching rule just agreed (as its own PR if PRs
-  are used). Ask before committing.
+**Files**
+- Copy from `scaffold/` (plus `scaffold-home/`, `scaffold-global/` if chosen).
+  Replace every `{{PLACEHOLDER}}` and delete the guidance HTML comments.
+- `docs/tracker.md` = the chosen tracker doc, with every example (`APP`, `ABC`, JQL,
+  label names, branch shape) rewritten to the project's real values. Record the
+  Jira site/cloud id there.
+- Ticket template: local tracker → `docs/tickets/_TEMPLATE.md` with the real key
+  prefix. Jira / GitHub → do not copy it; use its sections as the issue description.
+
+**Never overwrite.** Existing files are merged:
+- Append new sections; keep existing rules.
+- If an existing rule conflicts with a new one (e.g. a different session-start
+  routine, or branching), show both and ask which wins. The `Session start` rule
+  (read `HANDOVER.md`) must end up present, or handover will not work.
+- Existing skills or agents with the same name: keep theirs, report the clash.
+- `~/.claude/` files: same rules.
+
+**Home folder** (if chosen): first create the parent with `scaffold-home/CLAUDE.md`
+and the repo map, and put the workflow agreement there (it applies to all repos).
+Each repo's own `CLAUDE.md` keeps only its technical rules.
+
+**Workflow skills.** The user installs Matt Pocock's collection
+(https://github.com/mattpocock/skills). In Claude Code this is usually
+`/plugin marketplace add mattpocock/skills`, then installing it from `/plugin`;
+follow that repo's README if this differs. Afterwards, map the installed skill
+names to the four roles and write the mapping into `CLAUDE.md`:
+
+| Role | Look for | If missing |
+|---|---|---|
+| grill | `grill-me`, `grilling` | ask one question at a time with a recommended answer, until nothing is unclear |
+| spec | `to-spec`, `to-prd` | write the spec as described in `docs/workflow.md` §3 |
+| tickets | `to-tickets`, `to-issues` | split as described in `docs/workflow.md` §4 |
+| implement | `implement`, `tdd` | follow `docs/workflow.md` §5 |
+
+The workflow works without the plugin; the skills just make it consistent.
+
+**Tracker setup**
+- Local: create `docs/tickets/`.
+- GitHub: `gh auth status` (the user runs `! gh auth login` if needed); create the
+  labels listed in the plan.
+- Jira: help the user connect the Atlassian MCP (`docs/trackers/jira.md`); confirm
+  it works by listing their projects.
+
+**Commit.** If no git repo, `git init`. Ask, then commit the setup following the
+branching rule just agreed (its own PR if PRs are used).
 
 ## 7. Verify with a dry run
-Ask the user for one small real task (or suggest one from the backlog). Walk it
-through the flow up to an approved plan: describe → grill → spec → ticket(s).
-Stop there unless the user wants to continue into implementation.
-Then confirm:
-- a fresh session would find `HANDOVER.md` via `CLAUDE.md`;
-- the ticket exists in the chosen tracker with dated decisions;
-- `handover` and `continue` are explained to the user in one line each.
+Ask the user for one small real task (or suggest one). Walk it through the flow up
+to an approved plan: describe → grill → spec → ticket(s). Stop there unless the
+user wants to go on. Then confirm:
+- `CLAUDE.md` has the Session start rule, so a fresh session reads `HANDOVER.md`;
+- the ticket exists in the tracker with dated decisions;
+- the user knows the phrases: grill (or the mapped skill name), `handover`, `continue`.
 
 ## 8. Report
-Finish with: what was installed, what was skipped and why, and the three phrases
-the user will use most: `/grill-me`, `handover`, `continue`.
+What was installed, what was skipped and why, the skill-name mapping, and the
+three phrases the user will use most.
