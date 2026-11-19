@@ -25,15 +25,28 @@ only adds the repo map, cross-repo rules and routing; it never overrides a repo.
 | `app-infra/` | infra only, rarely changed | Terraform | `main`, PR | `app-infra/CLAUDE.md` (or "none") | -->
 
 ## Cross-repo work
-- One plan and one ticket for a change that spans repos; one branch and one
-  commit/PR **per repo touched**, each following that repo's own rules.
+- One plan and one parent spec/ticket for a change that spans repos; one child
+  ticket per repo is fine (different owners, different trackers). One branch and
+  one commit/PR **per repo touched**, each following that repo's own rules.
 - Every PR (or ticket note) states the merge order, e.g. "merge api before ui".
 - Stage and commit inside each repo. Never `git add` across repos from here.
 - Env files: never commit them; canonical copies live outside the repos ({{ENV_DIR}}).
 - Specs and decisions that span repos: `docs-claude/`. Single-repo ones stay in
-  that repo's tracker.
+  that repo's tracker. Draft tickets while a tracker is not connected (or while a
+  team does not want drafts in its repo): `docs-claude/drafts/`.
+- Deferred repo setup (no ticket key yet, or another owner commits): the prepared
+  changes wait as `docs-claude/drafts/<repo>-setup.patch`, with a **Waiting on the
+  user** item in `HANDOVER.md` saying who applies it and when.
 
 ## This folder in git
 This folder is a **local-only** git repo (never add a remote, never push). Its
-`.gitignore` lists every repo folder, so only `CLAUDE.md`, `HANDOVER.md` and
-`docs-claude/` are versioned here. Commit after updating them.
+`.gitignore` lists every repo folder, so only `CLAUDE.md`, `HANDOVER.md`,
+`docs-claude/` and `.claude/` (agents and the handover skill for sessions started
+here) are versioned. Commit after updating them.
+
+## Read when relevant
+| When you are... | Read first |
+|---|---|
+| working inside a repo | that repo's `CLAUDE.md` (it routes to its map) |
+| guiding the user, or they seem unsure | `docs-claude/coaching.md` |
+| delegating to subagents | `.claude/agents/` and the repo's agent notes |

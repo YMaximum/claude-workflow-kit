@@ -16,7 +16,8 @@ A personal parent folder holding the clones side by side, with its own short
 app-home/                ← start claude here (personal; local-only git)
 ├── CLAUDE.md            ← repo map, cross-repo rules, routing   (scaffold-home/CLAUDE.md)
 ├── HANDOVER.md          ← the only session state, covering all repos
-├── docs-claude/         ← cross-repo specs and decisions
+├── .claude/             ← agents + handover skill for sessions started here
+├── docs-claude/         ← cross-repo specs, decisions, coaching, drafts/
 ├── .gitignore           ← lists every repo folder
 ├── app-api/             ← its own git repo (shared with the team)
 │   ├── CLAUDE.md        ← the team's contract: Always rules, routing (≤ ~80 lines)
@@ -40,8 +41,9 @@ app-home/                ← start claude here (personal; local-only git)
   of each repo. Per-repo `HANDOVER.md` files are for sessions started inside a repo.
 
 ## Cross-repo rules
-- One plan and one ticket; one branch and one commit/PR **per repo touched**, each
-  following that repo's rules; every PR states the merge order.
+- One plan and one parent spec/ticket; one child ticket per repo is fine. One
+  branch and one commit/PR **per repo touched**, each following that repo's rules;
+  every PR states the merge order.
 - Stage and commit inside each repo; never a blanket add across repos.
 - Keep env files out of the repos; canonical copies live in one folder outside them.
 
@@ -49,11 +51,14 @@ app-home/                ← start claude here (personal; local-only git)
 1. Make the folder and clone (or move) the repos into it. Moving local clones is
    fine; git does not care about the parent folder.
 2. One plan covering every repo and the home folder, approved once.
-3. Repo by repo:
+3. Repo by repo, each one **full adopt / review only / none** (you choose):
    - **no `CLAUDE.md`**: full adopt (app context, map, short `CLAUDE.md`,
      `docs/claude/`, `docs/codebase/`);
    - **existing `CLAUDE.md`**: the same statement-by-statement review as a single
      repo, restructured only where you approve;
-   - each repo gets its own setup branch and commit (or PR), following its rules.
-4. Home: `scaffold-home/CLAUDE.md` with the repo map, `HANDOVER.md`, `docs-claude/`.
+   - each repo gets its own setup branch and commit (or PR), following its rules;
+   - **deferred** (no ticket key yet, or another owner commits): the changes wait
+     as a patch in `docs-claude/drafts/`, with a waiting item in `HANDOVER.md`.
+4. Home: `scaffold-home/` (`CLAUDE.md` with the repo map, `.claude/` agents and
+   handover skill, `docs-claude/coaching.md`), `HANDOVER.md`, `docs-claude/drafts/`.
    `git init` locally, `.gitignore` every repo folder, commit. Never add a remote.

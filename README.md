@@ -46,7 +46,7 @@ Nothing existing is overwritten.
 | [docs/adopting-existing-project.md](docs/adopting-existing-project.md) | adopt mode |
 | [docs/codebase-map.md](docs/codebase-map.md) | mapping a codebase: short routed `CLAUDE.md`, detail in `docs/codebase/` |
 | [scaffold/](scaffold/) | files copied into a project: a short routing `CLAUDE.md`, `docs/claude/` (workflow, agents, coaching), `docs/codebase/` (map templates), `HANDOVER.md`, ticket template, agents, handover skill |
-| [scaffold-home/](scaffold-home/) | `CLAUDE.md` for a multi-repo home folder (repo map, cross-repo rules, routing; each repo keeps its own contract) |
+| [scaffold-home/](scaffold-home/) | multi-repo home folder: `CLAUDE.md` (repo map, cross-repo rules, routing; each repo keeps its own contract), `.claude/` agents and handover skill, `docs-claude/coaching.md` |
 | [scaffold-global/](scaffold-global/) | `~/.claude/CLAUDE.md` routing rules + `model-reference.md` |
 
 ## Using it as your own scaffold

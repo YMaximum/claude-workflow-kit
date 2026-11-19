@@ -13,7 +13,8 @@ Key terms: {{KEY_TERMS}} (all terms: `docs/codebase/glossary.md`)
 - {{LINT_COMMAND}}: lint / typecheck
 
 ## Session start
-1. Read `HANDOVER.md`. Continue from there when the user says "continue".
+1. Read `HANDOVER.md` if present. Continue from there when the user says "continue".
+   (Started from a multi-repo home folder? Use the home `HANDOVER.md` instead.)
 2. Keep `HANDOVER.md` current after every commit and every subagent result.
    When the user says "handover", use the `handover` skill and stop.
 
@@ -49,6 +50,4 @@ Key terms: {{KEY_TERMS}} (all terms: `docs/codebase/glossary.md`)
 {{GOTCHAS}}
 <!-- the top 3-5 only: critical flows that must not break, no-go folders (the rule
      lives here, not as a file inside them), surprising commands. -->
-
-## Adopted from claude-workflow-kit
-{{ADOPTED_PARTS}} (kit: claude-workflow-kit@{{KIT_SHA}}, {{DATE}})
+{{ADOPTED_FOOTER}}

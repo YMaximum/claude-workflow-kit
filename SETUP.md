@@ -127,7 +127,8 @@ the answer and skip that question.
 
 | Placeholder / decision | Where the value comes from |
 |---|---|
-| What to adopt (all, or a subset) | ask |
+| What to adopt (all, or a subset) | ask. Home mode: per repo, **full adopt / review only / none** (e.g. a rarely touched infra repo can be skipped), plus whether each repo's setup is committed now or **deferred** |
+| `{{ADOPTED_FOOTER}}` | solo or the user wants it: `## Adopted from claude-workflow-kit` + the adopted parts, `claude-workflow-kit@{{KIT_SHA}}`, the date. Team repos where it would confuse teammates: empty (record the kit version in the setup commit message instead) |
 | `{{PROJECT_NAME}}` | README / package file; confirm |
 | `{{APP_CONTEXT}}`, `{{KEY_TERMS}}`, `{{GOTCHAS}}` | step 3b discussion: 3-5 lines of context, the 3-6 key terms, the top 3-5 gotchas |
 | `{{APP_PURPOSE_DETAIL}}` `{{LAYOUT}}` `{{DATA_FLOW}}` `{{AREA_TABLE}}` `{{CRITICAL_FLOWS}}` `{{EXTERNAL_SYSTEMS}}` `{{DIRECTION}}` | step 3b survey + discussion (`docs/codebase/README.md`); New mode: what is known, "none yet" otherwise |
@@ -155,7 +156,6 @@ the answer and skip that question.
 | Ticket key for the setup commit | if branches need a ticket key: ask for one (or a "chore" branch name the team accepts) |
 | Docs language | the user's language unless they say otherwise |
 | `{{DATE}}` | today |
-| `{{ADOPTED_PARTS}}` | the adoption answer (e.g. "all" or "handover, agent routing") |
 | `{{KIT_SHA}}` | the kit commit noted when cloning |
 | `{{GRILL_SKILL}}` `{{SPEC_SKILL}}` `{{TICKETS_SKILL}}` `{{IMPLEMENT_SKILL}}` | installed skill names (step 6), or "none" |
 
@@ -227,12 +227,16 @@ the user agrees, because adding a file is itself a change to that folder. Nested
 `CLAUDE.md` files suit folders where adding a file is fine.
 
 **Never overwrite.** Existing files are merged:
+- The `Session start` rule (read `HANDOVER.md` if present) is required in a
+  single repo. In home mode it is optional in each repo, since the home
+  `HANDOVER.md` is the session state there; keep it if teammates use per-repo
+  handovers.
 - Existing `CLAUDE.md`: apply the restructure approved in step 3b. Content moved out
   goes to the routed file named in the review table; nothing is deleted without
   approval. Other existing files: append new sections; keep existing rules.
 - If an existing rule conflicts with a new one (e.g. a different session-start
-  routine, or branching), show both and ask which wins. The `Session start` rule
-  (read `HANDOVER.md`) must end up present, or handover will not work.
+  routine, or branching), show both and ask which wins. Outside home mode the
+  `Session start` rule must end up present, or handover will not work.
 - Existing skills or agents with the same name: keep theirs, report the clash, and
   rewrite the routing text in `CLAUDE.md` to describe *their* agent (its real model
   and purpose), e.g. "use `scout` (sonnet) for searches, or pass `model: haiku` for
@@ -240,12 +244,20 @@ the user agrees, because adding a file is itself a change to that folder. Nested
 - `~/.claude/` files: same rules.
 
 **Home folder** (if chosen), in this order:
-1. Repo by repo: install as in a single repo (files, restructure, map), each with
-   its own setup branch and commit (or PR) per that repo's rules. Workflow rules
-   stay in each repo; do not move them to the home folder.
-2. Home: `scaffold-home/CLAUDE.md` with the repo map (branching per repo, read from
-   each repo's `CLAUDE.md`), `HANDOVER.md` (the only session state, a section per
-   repo), `docs-claude/`.
+1. Repo by repo, as chosen (full adopt / review only / none): install as in a
+   single repo (files, restructure, map), each with its own setup branch and
+   commit (or PR) per that repo's rules. Workflow rules stay in each repo; do not
+   move them to the home folder.
+   **Deferred repo** (no ticket key yet, or someone else commits there): prepare
+   the changes on a scratch copy, save them as
+   `docs-claude/drafts/<repo>-setup.patch` (check it applies cleanly to the repo's
+   base branch with `git apply --check`), leave the repo untouched, and add a
+   **Waiting on the user** item: who applies it, when, and the exact command.
+   Uncommitted-by-request is also fine: leave files in the working tree and say so.
+2. Home: copy `scaffold-home/` (`CLAUDE.md` with the repo map, branching per repo
+   read from each repo's `CLAUDE.md`; `.claude/` agents and handover skill;
+   `docs-claude/coaching.md`), plus `HANDOVER.md` (the only session state, a
+   section per repo) and `docs-claude/drafts/`.
 3. Home in git, **local only**: `git init`, a `.gitignore` listing every repo
    folder, commit. Never add a remote or push.
 4. Per-repo `HANDOVER.md` files are not created by a home setup (they are for
@@ -283,7 +295,8 @@ own login, they run with a leading `!` (e.g. `! gh auth login`).
   connector or `claude mcp add`), including the admin-approval case. A claude.ai
   connector is account-wide, not per project. Confirm by listing their projects. If it is not
   connected yet, continue: keep specs and draft tickets in `HANDOVER.md` (or
-  `docs/specs/`) and create the Jira issues once it is connected. Jira assigns issue
+  `docs/specs/`; in home mode, the home `docs-claude/drafts/`) and create the Jira
+  issues once it is connected. Jira assigns issue
   keys; never invent one.
 - Tracker not ready (GitHub or Jira): follow the tracker doc's "not ready yet"
   recipe (local drafts, `pending` status, exact next step in `HANDOVER.md`).
@@ -317,8 +330,8 @@ In a short message (in their language):
 2. The phrases they will use: "grill me", "implement <ticket>", "handover",
    "continue", and `/clear`, with why: long chats get slower and cost more, and
    `HANDOVER.md` carries what matters into the fresh session. Point to the cheat
-   sheet in `docs/claude/coaching.md` (or wherever it was merged), routed from
-   `CLAUDE.md`.
+   sheet in `docs/claude/coaching.md` (home mode: `docs-claude/coaching.md`; or
+   wherever it was merged), routed from `CLAUDE.md`.
 3. What is still pending (prerequisites, tracker connection, plugin) and the exact
    next step for each.
 4. Offer to start their first real feature now.
