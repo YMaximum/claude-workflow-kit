@@ -44,6 +44,9 @@ epic description, or a parent GitHub issue).
 - Each ticket: goal, expected outcome, acceptance criteria (behaviour, never the
   test code), out of scope, decisions, blockers. Label ready ones `ready-for-agent`.
 - Do not `/clear` until the tickets exist; then clearing is safe.
+- If the user asks to split by layer (backend ticket, UI ticket), accept when each
+  part stays demoable on its own (e.g. the API via curl, the UI against a stub),
+  and note the split in the tickets.
 
 ## 5. Implement (Claude: `/implement` or the ticket loop)
 1. Fresh session: read `HANDOVER.md`, then the **whole** ticket

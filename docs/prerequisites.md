@@ -86,6 +86,9 @@ user's system before giving them.
 
 Then check the project's commands actually run (Adopt mode): install dependencies
 (ask first), run the test command once. Record any that fail as **Gotchas**.
+- Manifest incomplete (code imports packages the manifest does not declare), or a
+  script broken by the runtime version: do **not** fix it during setup. Record it
+  in Gotchas and **Waiting on the user**, and propose a ticket for it.
 New mode: only the runtime is checked now; the first ticket creates the app.
 
 ## 5. Verification tool (only if chosen)

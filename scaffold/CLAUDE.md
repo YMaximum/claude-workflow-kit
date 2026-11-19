@@ -40,13 +40,15 @@ Key terms: {{KEY_TERMS}} (all terms: `docs/codebase/glossary.md`)
 | touching code you have not mapped yet | `docs/codebase/README.md` |
 {{AREA_ROUTES}}
 <!-- one row per mapped area: | working on <area> (<paths>) | `docs/codebase/<area>.md` |
+     plus, if they exist: business rules → docs/codebase/domain-rules.md,
+     writing code → docs/claude/coding-style.md. Drop rows for files not created.
      Unmapped area touched by a ticket: create its file from
      docs/codebase/_AREA_TEMPLATE.md in the same change and add a row here. -->
 
 ## Gotchas
 {{GOTCHAS}}
-<!-- the top 3-5 only: critical flows that must not break, no-go areas,
-     surprising commands. Hard local rules also go in a nested <dir>/CLAUDE.md. -->
+<!-- the top 3-5 only: critical flows that must not break, no-go folders (the rule
+     lives here, not as a file inside them), surprising commands. -->
 
 ## Adopted from claude-workflow-kit
 {{ADOPTED_PARTS}} (kit: claude-workflow-kit@{{KIT_SHA}}, {{DATE}})

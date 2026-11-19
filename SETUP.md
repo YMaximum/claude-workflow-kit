@@ -17,6 +17,10 @@ commit (`git -C <scratch>/claude-workflow-kit rev-parse --short HEAD`) for `{{KI
 If cloning is impossible, fetch files from the raw base
 `https://raw.githubusercontent.com/YMaximum/claude-workflow-kit/main/<path>`.
 
+**Setup never changes application code.** It writes workflow and docs files only.
+Bugs or gaps found on the way (a broken test script, missing dependencies, no lint
+config) become tickets, reported in the summary; fix them only if the user asks.
+
 **Precedence, everywhere below:** the project's existing conventions and the user's
 answers win over the kit's examples. The kit's names (`APP-000`, `develop`,
 `<KEY>-<n>-<slug>`) are examples, never requirements.
@@ -71,8 +75,10 @@ Then infer the project's conventions before you ask. Collect what exists:
 For a large project, delegate the reading to a cheap read-only subagent and ask
 for a short report. Show the user a short summary of what you inferred.
 
-Then, before the first question, give the user the five words they will hear most,
-one line each from `docs/glossary.md`: **grill, spec, ticket, commit, handover**.
+Message order: (1) the audit summary, with the five words the user will hear most
+folded in, one line each from `docs/glossary.md`: **grill, spec, ticket, commit,
+handover**; (2) the step 3b app-context batch; (3) the defaults; (4) the remaining
+decisions. Keep each message short; a beginner should never get all four at once.
 
 ## 3b. Map the codebase and agree the app context
 Follow `docs/codebase-map.md`.
@@ -82,8 +88,9 @@ Follow `docs/codebase-map.md`.
   user. Map the overview, glossary and the 2-3 most active areas now; other areas
   are mapped when a ticket first touches them.
 - **Existing `CLAUDE.md`:** review it statement by statement against the code
-  (keep / fix / move to a routed file / remove?) and propose a restructure as a
-  table and a diff. Apply only what the user approves (step 6).
+  and propose a restructure: a table with **one action per row** (keep / fix /
+  move to `<file>` / remove?), then the proposed new root **in full** and a list of
+  moved blocks with their destination. Apply only what the user approves (step 6).
 - **New mode:** no code to map. Discuss the app context only; `docs/codebase/`
   starts with the overview and glossary, and area files are created by tickets.
 - **Home mode:** map each repo into its own `docs/codebase/`; the home `CLAUDE.md`
@@ -96,7 +103,9 @@ and conflicts. Stop when every row that applies has a value.
 **Batching rule (applies to every grill, here and later):** questions that are
 independent of each other go together, up to ~4 per message. A question whose
 options depend on an earlier answer is never in the same batch; ask it after that
-answer.
+answer. Typical dependent pairs, never batched together: tracker → its labels and
+key; branching → PR rules; data model (e.g. delete vs status column) → storage,
+schema or migration questions; "is X legacy?" → "which folders exactly?".
 
 To avoid over-asking: put rows with an obvious default (commit style, key prefix,
 date, language, models) into **one** message: "Here are my defaults; change any?"
@@ -121,7 +130,7 @@ the answer and skip that question.
 | `{{SPEC_LOCATION}}` | from the tracker doc (local: in the ticket, `docs/specs/` for multi-ticket features) |
 | `{{BRANCHING_RULE}}` | audit; keep the existing convention (a `develop` branch means branch from and PR to it). Only with no convention at all: recommend `main` for solo, `<KEY>-<n>-<slug>` + PR for teams |
 | `{{COMMIT_STYLE}}` | audit (`git log`); confirm |
-| `{{PR_RULE}}` | audit (PR target, title style) + who merges (default: the user). `main`-only: "no PRs" |
+| `{{PR_RULE}}` | audit (PR target, title style) + who merges (default: the user). `main`-only: "no PRs". Branches but no remote: "review the branch diff locally; the PR description goes in the ticket; the user merges locally" |
 | `{{TEST_RULE}}` | ask: test-first required? regression test shown failing first? |
 | `{{VERIFY_METHOD}}` | ask. Common: "run tests, lint and build, then give the user a click-checklist for the UI"; or an e2e/browser tool |
 | Tracker automation (does a branch/PR move tickets?) | ask (Jira / GitHub) |
@@ -146,9 +155,9 @@ List every action, one line each. Example (GitHub Issues, adopt mode):
 user    install prerequisites         only what is missing, e.g. "install Node LTS", "set git identity"
 user    connect the tracker           only what is missing, e.g. "install gh, then ! gh auth login"
 restruct CLAUDE.md                    root ≤ ~80 lines; approved keep/fix/move items applied (diff shown)
-create  docs/claude/workflow.md, agents.md, coaching.md
-create  docs/codebase/README.md, glossary.md, _AREA_TEMPLATE.md, api.md, data.md (2-3 active areas)
-create  src/legacy/CLAUDE.md          hard local rule only (if agreed)
+create  docs/claude/workflow.md       required (agents.md, coaching.md optional: may be merged in)
+create  docs/codebase/README.md, glossary.md, api.md, data.md (2-3 active areas), _AREA_TEMPLATE.md
+create  docs/codebase/domain-rules.md, docs/claude/coding-style.md   only if there is content for them
 create  HANDOVER.md                   bootstrapped from open branches / uncommitted work / open PRs
 create  docs/tracker.md               from docs/trackers/github-issues.md, examples rewritten with real values
 create  .claude/agents/scout.md, implementer.md
@@ -176,6 +185,13 @@ user**. Continue with the rest of setup; do not stall.
   and delete the guidance HTML comments. Area files come from
   `docs/codebase/_AREA_TEMPLATE.md` (keep the template for later areas).
 - Root `CLAUDE.md` must end up ≤ ~80 lines. Anything longer moves to a routed file.
+- Required: `CLAUDE.md`, `HANDOVER.md`, `docs/claude/workflow.md`,
+  `docs/codebase/README.md`. Optional (the user may drop or merge them):
+  `docs/claude/agents.md` and `coaching.md` (merge into `workflow.md`),
+  `docs/codebase/glossary.md` (merge into the README), `_AREA_TEMPLATE.md` (then
+  new area files follow the sections listed in `docs/codebase-map.md`). When one
+  is dropped, update every reference to it (routing table, `workflow.md`,
+  onboarding) so nothing points at a missing file.
 - `docs/tracker.md` = the chosen tracker doc, with every example (`APP`, `ABC`, JQL,
   label names, branch shape) rewritten to the project's real values. Record the
   Jira site/cloud id there.
@@ -189,6 +205,11 @@ user**. Continue with the rest of setup; do not stall.
 **Uncommitted work in the tree.** Do the setup in a separate git worktree on a new
 branch (`git worktree add ../<repo>-setup -b <setup-branch> <base-branch>`), or ask the
 user to commit first. Never stash, switch or reset the user's tree.
+
+**No-touch folders** (frozen legacy, generated code, vendored code): record the
+rule as a root **Gotchas** line. Do not add a nested `CLAUDE.md` inside them unless
+the user agrees, because adding a file is itself a change to that folder. Nested
+`CLAUDE.md` files suit folders where adding a file is fine.
 
 **Never overwrite.** Existing files are merged:
 - Existing `CLAUDE.md`: apply the restructure approved in step 3b. Content moved out
@@ -214,7 +235,8 @@ follow that repo's README if this differs. Then the user **restarts Claude Code*
 and types `/` to see the skill list; confirm the skills appear before relying on
 them. Map the installed skill names (they may carry a plugin prefix, e.g.
 `mattpocock-skills:grilling`) to the four roles and fill the **Skills** table in
-`CLAUDE.md`:
+`docs/claude/workflow.md`. Plugins are installed **per person**: in a team, each
+teammate installs them, and the "If missing" column is what everyone can rely on.
 
 | Role | Look for | If missing |
 |---|---|---|
@@ -245,7 +267,8 @@ own login, they run with a leading `!` (e.g. `! gh auth login`).
 
 **Commit.** If no git repo, `git init`. Commit the setup following the branching
 rule just agreed (its own PR if PRs are used). Approval of a plan that lists the
-commit covers it; otherwise ask first.
+commit covers it; otherwise ask first. The setup commit holds only setup files;
+summarise a `CLAUDE.md` restructure in its message for teammates.
 
 ## 7. Verify with a dry run
 Run it where the new `CLAUDE.md` exists: the setup worktree/branch if the setup is
@@ -253,7 +276,9 @@ not merged yet (tell the user it takes effect for everyone after merge).
 Ask the user for one small real task (or suggest one). Walk it through the flow up
 to an approved plan: describe → grill → spec → ticket(s). Plan mode is optional
 here; just write nothing until the spec and the ticket breakdown are approved.
-Stop there unless the user wants to go on. Then confirm:
+Stop there unless the user wants to go on. Commit the dry-run spec and tickets
+**separately** from the setup commit (same branch, own commit; or after the setup
+is merged), so the setup can be reviewed on its own. Then confirm:
 - `CLAUDE.md` has the Session start rule, so a fresh session reads `HANDOVER.md`;
 - root `CLAUDE.md` is ≤ ~80 lines and every routed file it names exists;
 - the dry-run ticket names which `docs/codebase/` area it touches (mapped or to map);
@@ -269,7 +294,8 @@ In a short message (in their language):
 2. The phrases they will use: "grill me", "implement <ticket>", "handover",
    "continue", and `/clear`, with why: long chats get slower and cost more, and
    `HANDOVER.md` carries what matters into the fresh session. Point to the cheat
-   sheet now in their `CLAUDE.md`, and to `docs/glossary.md` words they asked about.
+   sheet in `docs/claude/coaching.md` (or wherever it was merged), routed from
+   `CLAUDE.md`.
 3. What is still pending (prerequisites, tracker connection, plugin) and the exact
    next step for each.
 4. Offer to start their first real feature now.
