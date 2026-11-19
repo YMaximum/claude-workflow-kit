@@ -21,10 +21,14 @@ they come up as questions.
 
 ## 2. Grill #1, in plan mode (together)
 Plan mode (Shift+Tab in Claude Code) lets Claude read and ask, but not change files.
-Run the grill skill: Claude asks **one question at a time**, each with its
-recommended answer, until nothing is unclear: scope, behaviour, edge cases,
-non-goals, constraints. Claude explores the code itself instead of asking things
-the code can answer.
+Run the grill skill: Claude asks questions, each with its recommended answer, until
+nothing is unclear: scope, behaviour, edge cases, non-goals, constraints. Claude
+explores the code itself instead of asking things the code can answer.
+
+**Batching rule:** questions that are independent of each other go together (up to
+~4 per message). A question whose options depend on an earlier answer is never in
+the same batch; it comes after that answer. This overrides "one question at a
+time" in installed grill skills.
 
 ## 3. Spec (Claude: `/to-spec`)
 The agreed decisions become a spec: problem, goal, scope and non-goals, behaviour,

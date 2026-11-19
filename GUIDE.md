@@ -49,6 +49,15 @@ It settles:
 Build it with a grill: ask Claude to interview you about how you want to work, then
 write the answers into `CLAUDE.md`. Date it; change it only by agreement.
 
+### Keep CLAUDE.md short: route the rest
+`CLAUDE.md` is loaded in every session, so it holds only essentials (about 80
+lines): app context, commands, session start, the "Always" rules, top gotchas, and
+a **Read when relevant** table. Details live in routed files that Claude reads only
+when a task needs them: `docs/claude/` (workflow, agent routing, coaching) and
+`docs/codebase/` (overview, glossary, one file per area). Nested `CLAUDE.md` files
+are only for hard local rules. How to build the map with the user:
+[docs/codebase-map.md](docs/codebase-map.md).
+
 ## 3. Skills
 Matt Pocock's skill collection gives the four workflow steps a standard form:
 grill-me (interview), to-spec, to-tickets, implement. Use them as they are, or copy
@@ -63,7 +72,8 @@ Describe ─▶ Grill #1 ─▶ Spec ─▶ Tickets ─▶ Implement ─▶ Comm
                                                                                      merge ◀───┘
 ```
 1. **Describe** the goal and expected outcome.
-2. **Grill #1** in plan mode: Claude asks one question at a time until scope,
+2. **Grill #1** in plan mode: Claude asks questions (independent ones batched,
+   follow-ups after the answer they depend on) until scope,
    behaviour and edge cases are clear. No files change in plan mode.
 3. **Spec**: the decisions written up (`/to-spec`).
 4. **Tickets**: vertical slices, each demoable and sized for one fresh session,

@@ -27,7 +27,8 @@ answers win over the kit's examples. The kit's names (`APP-000`, `develop`,
 Read `GUIDE.md` fully, plus `docs/glossary.md`, `docs/prerequisites.md`, `docs/workflow.md`, `docs/agent-routing.md` and
 `docs/handover.md`. Read the other docs only when they apply: the chosen tracker's
 `docs/trackers/*.md`, `docs/adopting-existing-project.md` in Adopt mode,
-`docs/home-pattern.md` in Home mode, `docs/skills.md` when mapping skills.
+`docs/home-pattern.md` in Home mode, `docs/skills.md` when mapping skills,
+`docs/codebase-map.md` in Adopt mode (and in New mode for the app-context part).
 
 ## 2. Pick the mode
 - **New**: the folder has no project code yet (empty, or only a README).
@@ -73,22 +74,47 @@ for a short report. Show the user a short summary of what you inferred.
 Then, before the first question, give the user the five words they will hear most,
 one line each from `docs/glossary.md`: **grill, spec, ticket, commit, handover**.
 
+## 3b. Map the codebase and agree the app context
+Follow `docs/codebase-map.md`.
+- **Adopt mode:** survey the code (delegate per area to cheap scouts if large),
+  draft the four app-context topics (purpose and users, domain terms, critical
+  flows and no-go zones, direction and constraints), and discuss them with the
+  user. Map the overview, glossary and the 2-3 most active areas now; other areas
+  are mapped when a ticket first touches them.
+- **Existing `CLAUDE.md`:** review it statement by statement against the code
+  (keep / fix / move to a routed file / remove?) and propose a restructure as a
+  table and a diff. Apply only what the user approves (step 6).
+- **New mode:** no code to map. Discuss the app context only; `docs/codebase/`
+  starts with the overview and glossary, and area files are created by tickets.
+- **Home mode:** map each repo into its own `docs/codebase/`; the home `CLAUDE.md`
+  routes to each repo's overview.
+
 ## 4. Grill the user
 Ask with a recommended answer each time. Confirm inferences; ask only about gaps
 and conflicts. Stop when every row that applies has a value.
+
+**Batching rule (applies to every grill, here and later):** questions that are
+independent of each other go together, up to ~4 per message. A question whose
+options depend on an earlier answer is never in the same batch; ask it after that
+answer.
 
 To avoid over-asking: put rows with an obvious default (commit style, key prefix,
 date, language, models) into **one** message: "Here are my defaults; change any?"
 Explain each default in plain words; never ask a question the user cannot be
 expected to answer (e.g. model availability): state the default instead.
-Ask the real decisions (what to adopt, tracker, branching, tests, verification,
-global rules) one at a time. If the user answers ahead, take the answer and skip
-that question.
+Then batch the real decisions that are independent (e.g. tests, verification,
+global rules); ask dependent ones after their answer (e.g. tracker first, then its
+labels and key; branching first, then PR rules). If the user answers ahead, take
+the answer and skip that question.
 
 | Placeholder / decision | Where the value comes from |
 |---|---|
 | What to adopt (all, or a subset) | ask |
-| `{{PROJECT_NAME}}`, `{{ONE_LINE_DESCRIPTION}}` | README / package file; confirm |
+| `{{PROJECT_NAME}}` | README / package file; confirm |
+| `{{APP_CONTEXT}}`, `{{KEY_TERMS}}`, `{{GOTCHAS}}` | step 3b discussion: 3-5 lines of context, the 3-6 key terms, the top 3-5 gotchas |
+| `{{APP_PURPOSE_DETAIL}}` `{{LAYOUT}}` `{{DATA_FLOW}}` `{{AREA_TABLE}}` `{{CRITICAL_FLOWS}}` `{{EXTERNAL_SYSTEMS}}` `{{DIRECTION}}` | step 3b survey + discussion (`docs/codebase/README.md`); New mode: what is known, "none yet" otherwise |
+| `{{DOMAIN_TERMS}}` | step 3b discussion (`docs/codebase/glossary.md`), one table row per term |
+| `{{AREA_ROUTES}}` | one routing-table row per area mapped now; empty in New mode |
 | `{{INSTALL_COMMAND}}` `{{DEV_COMMAND}}` `{{TEST_COMMAND}}` `{{LINT_COMMAND}}` | package/build files; ask if none |
 | `{{TRACKER}}`, key prefix, site/project ids | audit (ticket keys) + ask; then the matching `docs/trackers/*.md` |
 | Labels (`ready-for-agent`, `needs-triage`, `blocked`) | ask whether to use them, or map to the team's existing labels |
@@ -119,7 +145,10 @@ List every action, one line each. Example (GitHub Issues, adopt mode):
 ```
 user    install prerequisites         only what is missing, e.g. "install Node LTS", "set git identity"
 user    connect the tracker           only what is missing, e.g. "install gh, then ! gh auth login"
-append  CLAUDE.md                     sections: Session start, Workflow agreement, Agent routing (diff shown)
+restruct CLAUDE.md                    root ≤ ~80 lines; approved keep/fix/move items applied (diff shown)
+create  docs/claude/workflow.md, agents.md, coaching.md
+create  docs/codebase/README.md, glossary.md, _AREA_TEMPLATE.md, api.md, data.md (2-3 active areas)
+create  src/legacy/CLAUDE.md          hard local rule only (if agreed)
 create  HANDOVER.md                   bootstrapped from open branches / uncommitted work / open PRs
 create  docs/tracker.md               from docs/trackers/github-issues.md, examples rewritten with real values
 create  .claude/agents/scout.md, implementer.md
@@ -142,8 +171,11 @@ the fallback in that doc and record it in `HANDOVER.md` under **Waiting on the
 user**. Continue with the rest of setup; do not stall.
 
 **Files**
-- Copy from `scaffold/` (plus `scaffold-home/`, `scaffold-global/` if chosen).
-  Replace every `{{PLACEHOLDER}}` and delete the guidance HTML comments.
+- Copy from `scaffold/` (plus `scaffold-home/`, `scaffold-global/` if chosen),
+  including `docs/claude/` and `docs/codebase/`. Replace every `{{PLACEHOLDER}}`
+  and delete the guidance HTML comments. Area files come from
+  `docs/codebase/_AREA_TEMPLATE.md` (keep the template for later areas).
+- Root `CLAUDE.md` must end up ≤ ~80 lines. Anything longer moves to a routed file.
 - `docs/tracker.md` = the chosen tracker doc, with every example (`APP`, `ABC`, JQL,
   label names, branch shape) rewritten to the project's real values. Record the
   Jira site/cloud id there.
@@ -159,7 +191,9 @@ branch (`git worktree add ../<repo>-setup -b <setup-branch> <base-branch>`), or 
 user to commit first. Never stash, switch or reset the user's tree.
 
 **Never overwrite.** Existing files are merged:
-- Append new sections; keep existing rules.
+- Existing `CLAUDE.md`: apply the restructure approved in step 3b. Content moved out
+  goes to the routed file named in the review table; nothing is deleted without
+  approval. Other existing files: append new sections; keep existing rules.
 - If an existing rule conflicts with a new one (e.g. a different session-start
   routine, or branching), show both and ask which wins. The `Session start` rule
   (read `HANDOVER.md`) must end up present, or handover will not work.
@@ -184,7 +218,7 @@ them. Map the installed skill names (they may carry a plugin prefix, e.g.
 
 | Role | Look for | If missing |
 |---|---|---|
-| grill | `grill-me`, `grilling` | ask one question at a time with a recommended answer, until nothing is unclear |
+| grill | `grill-me`, `grilling` | questions with recommended answers, batched by the rule in step 4, until nothing is unclear |
 | spec | `to-spec`, `to-prd` | write the spec as described in `docs/workflow.md` §3 |
 | tickets | `to-tickets`, `to-issues` | split as described in `docs/workflow.md` §4 |
 | implement | `implement`, `tdd` | follow `docs/workflow.md` §5 |
@@ -221,6 +255,8 @@ to an approved plan: describe → grill → spec → ticket(s). Plan mode is opt
 here; just write nothing until the spec and the ticket breakdown are approved.
 Stop there unless the user wants to go on. Then confirm:
 - `CLAUDE.md` has the Session start rule, so a fresh session reads `HANDOVER.md`;
+- root `CLAUDE.md` is ≤ ~80 lines and every routed file it names exists;
+- the dry-run ticket names which `docs/codebase/` area it touches (mapped or to map);
 - the ticket exists in the tracker with dated decisions (or, if the tracker is not
   connected yet, the draft is recorded with a note to create it later);
 - the user knows the phrases: grill (or the mapped skill name), `handover`, `continue`.

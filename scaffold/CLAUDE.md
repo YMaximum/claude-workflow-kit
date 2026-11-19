@@ -1,6 +1,10 @@
 # {{PROJECT_NAME}}
 
-{{ONE_LINE_DESCRIPTION}}
+## About this app
+{{APP_CONTEXT}}
+<!-- 3-5 lines agreed with the user: what it does, for whom, the main jobs users do,
+     and where it is heading. Details: docs/codebase/README.md -->
+Key terms: {{KEY_TERMS}} (all terms: `docs/codebase/glossary.md`)
 
 ## Commands
 - {{INSTALL_COMMAND}}: install
@@ -13,87 +17,36 @@
 2. Keep `HANDOVER.md` current after every commit and every subagent result.
    When the user says "handover", use the `handover` skill and stop.
 
-## Workflow agreement (agreed with the user on {{DATE}})
-How we work. Change it only by agreement, and date the change.
+## Always (agreed with the user on {{DATE}})
+1. The user describes the goal and expected outcome; you propose the solution.
+2. Plan before code: no code changes until the plan is agreed.
+3. When a decision is needed, grill: questions with a recommended answer each.
+   Batch independent questions (up to ~4); ask a question that depends on an
+   earlier answer only after that answer. Never guess a product decision.
+4. Record every decision in the ticket ({{TRACKER}}), dated.
+5. Branching: {{BRANCHING_RULE}}. The user merges; never force-push.
+6. Tests: {{TEST_RULE}}
+7. Before handing over: {{VERIFY_METHOD}} Report real output only.
+8. Docs and the codebase map change in the same commit as the code they describe.
+9. Never delegate commits, pushes, PR bodies, tracker writes, migrations,
+   auth/secrets, or questions for the user.
 
-### Discuss first
-- The user describes the goal and the expected outcome; you propose the solution.
-- Grill (ask one question at a time until nothing is unclear) whenever a decision
-  is needed: before implementation, when implementation hits a question, and
-  after the user's manual review lists fixes. Never guess a product decision.
-- Plan before code: no code changes until the plan is agreed.
-- Record every decision in the ticket, dated.
-
-### Tickets
-- Tracker: {{TRACKER}}. See `docs/tracker.md`.
-- Pipeline: grill → spec → tickets → implement (skill names below).
-- Specs: {{SPEC_LOCATION}}
-  <!-- e.g. "inside the ticket; docs/specs/<slug>.md for multi-ticket features"
-       or "the Jira epic description" or "the parent GitHub issue" -->
-- Read the whole ticket (description, comments, linked work) before starting.
-
-### Skills
-| Role | Skill | If unavailable |
-|---|---|---|
-| grill | {{GRILL_SKILL}} | ask one question at a time with a recommended answer, until nothing is unclear |
-| spec | {{SPEC_SKILL}} | write goal, scope and non-goals, behaviour, acceptance criteria, risks |
-| tickets | {{TICKETS_SKILL}} | vertical slices, each demoable in one session; numbered list for approval first |
-| implement | {{IMPLEMENT_SKILL}} | read ticket → test first → implement → checks → commit per this agreement |
-<!-- Fill with the installed skill names (e.g. `/grilling`), or "none" to use the fallback. -->
-
-### Branches, commits, PRs
-- Branching: {{BRANCHING_RULE}}
-  <!-- e.g. "Branch <TICKET-ID>-<kebab-slug> from `develop`; never commit to `main`."
-       or   "Commit directly to `main` (solo project)." -->
-- Commits: {{COMMIT_STYLE}}. The message explains *why*, not only what.
-- PRs: {{PR_RULE}}. The PR body must stand alone for a reader with no session
-  context: what changed, why, how it was verified, what to check by hand.
-- The user merges. Never merge, force-push, or rewrite shared history.
-
-### Tests and verification
-- {{TEST_RULE}}
-  <!-- e.g. "Tests are mandatory for logic. A regression test must be shown failing
-       without the fix before the fix is applied." -->
-- Before handing over: {{VERIFY_METHOD}}
-  <!-- e.g. "run tests, lint and build, then give the user a short click-checklist
-       for the UI" or "run the e2e suite and paste the result" -->
-- Report real command output. Never call something green you did not run.
-
-### Docs
-- Docs change in the same piece of work as the behaviour they describe.
-
-### Agent routing
-- You are the orchestrator: keep decisions, design, synthesis and final review.
-- Delegate wide, cheap-to-check work to subagents (`.claude/agents/`):
-  `scout` (read-only search, cheapest model), `implementer` (bounded edits from a
-  clear spec). Use a mid-tier model per call when the spec leaves room for judgement.
-- Never delegate: commits, pushes, PR bodies, tracker writes, migrations,
-  auth/secrets, or questions for the user.
-- Verify every subagent result that feeds a decision. Escalate one model tier on a
-  thin result; do not retry the same model with the same brief.
-
-## Working with the user (coach the workflow)
-The user may be new to this way of working. Guide them gently, without lecturing:
-- Use plain words. The first time a term may be unfamiliar (grill, spec, ticket,
-  PR, lint...), explain it in one line, unless they have shown they know it.
-- If they jump straight to "build X" with no goal or outcome, ask for the expected
-  outcome and offer a grill before planning.
-- If a decision is needed and they have not decided, offer a grill.
-- After a manual review, if they list problems, offer: "list all fixes, then grill".
-- When they seem unsure what to do next, show the matching line below.
-- If a tool the workflow needs is missing (git, the runtime, `gh`, the tracker
-  connector), explain what it is for and walk them through installing it.
-
-| You want to | Say |
+## Read when relevant
+| When you are... | Read first |
 |---|---|
-| Start a feature | describe the goal + expected outcome, then "grill me" (plan mode: Shift+Tab) |
-| Write it down | "turn this into a spec", then "split it into tickets" |
-| Build a ticket | "implement <ticket>" |
-| I am unsure mid-way | "grill me on your open questions" |
-| After my review | list the fixes, then "grill me on these before fixing" |
-| Pause safely | "handover", then `/clear` |
-| Resume | "continue" |
+| starting or planning any ticket | `docs/claude/workflow.md` |
+| delegating to subagents | `docs/claude/agents.md` |
+| guiding the user, or they seem unsure | `docs/claude/coaching.md` |
+| touching code you have not mapped yet | `docs/codebase/README.md` |
+{{AREA_ROUTES}}
+<!-- one row per mapped area: | working on <area> (<paths>) | `docs/codebase/<area>.md` |
+     Unmapped area touched by a ticket: create its file from
+     docs/codebase/_AREA_TEMPLATE.md in the same change and add a row here. -->
+
+## Gotchas
+{{GOTCHAS}}
+<!-- the top 3-5 only: critical flows that must not break, no-go areas,
+     surprising commands. Hard local rules also go in a nested <dir>/CLAUDE.md. -->
 
 ## Adopted from claude-workflow-kit
 {{ADOPTED_PARTS}} (kit: claude-workflow-kit@{{KIT_SHA}}, {{DATE}})
-<!-- e.g. "workflow agreement, tickets (local), handover, agent routing" -->

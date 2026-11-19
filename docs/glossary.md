@@ -5,7 +5,8 @@ not know it. Do not lecture; one line, then continue.
 
 | Term | Plain meaning |
 |---|---|
-| **grill** | Claude asks you questions one at a time, each with a suggested answer, until everything about a decision is clear. |
+| **grill** | Claude asks you questions, each with a suggested answer, until everything about a decision is clear. Unrelated questions come together; a follow-up waits for the answer it depends on. |
+| **codebase map** | Short notes in `docs/codebase/` on how the app is built, read before touching an area. |
 | **spec** | A short written description of what we will build and how we know it is done. |
 | **ticket** | One small piece of work, written down so anyone (or any session) can pick it up. |
 | **acceptance criteria** | The checklist that says when a ticket is done. |

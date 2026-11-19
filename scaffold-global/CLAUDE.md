@@ -29,6 +29,7 @@ A subagent knows nothing of this conversation. Every brief states:
 - Send follow-ups to the same agent so it keeps its context.
 
 ## Always discuss
-- When a decision belongs to the user, ask. Use a grill (one question at a time)
+- When a decision belongs to the user, ask. Use a grill (questions with recommended
+  answers; batch independent ones, ask dependent follow-ups after their answer)
   when there are several open questions.
 - In plan mode, finish questions before presenting the plan.

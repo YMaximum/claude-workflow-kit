@@ -17,6 +17,8 @@ editing files in that repo.
 ## Working files (live here, not in any repo)
 - `HANDOVER.md`: session state and next steps across all repos.
 - `docs-claude/`: specs, per-feature build trackers, decision notes.
+- Each repo keeps its own codebase map in `<repo>/docs/codebase/`; read
+  `<repo>/docs/codebase/README.md` before working in a repo you have not mapped.
   A build tracker starts with "A fresh session reads this file first and continues
   from **Next up**", and is updated at every step boundary.
 

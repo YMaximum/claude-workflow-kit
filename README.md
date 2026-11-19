@@ -44,7 +44,8 @@ Nothing existing is overwritten.
 | [docs/skills.md](docs/skills.md) | Matt Pocock's skills and how to adapt them |
 | [docs/trackers/](docs/trackers/) | Jira, GitHub Issues, local files |
 | [docs/adopting-existing-project.md](docs/adopting-existing-project.md) | adopt mode |
-| [scaffold/](scaffold/) | files copied into a project (`CLAUDE.md`, `HANDOVER.md`, ticket template, agents, handover skill) |
+| [docs/codebase-map.md](docs/codebase-map.md) | mapping a codebase: short routed `CLAUDE.md`, detail in `docs/codebase/` |
+| [scaffold/](scaffold/) | files copied into a project: a short routing `CLAUDE.md`, `docs/claude/` (workflow, agents, coaching), `docs/codebase/` (map templates), `HANDOVER.md`, ticket template, agents, handover skill |
 | [scaffold-home/](scaffold-home/) | `CLAUDE.md` for a multi-repo home folder |
 | [scaffold-global/](scaffold-global/) | `~/.claude/CLAUDE.md` routing rules + `model-reference.md` |
 
