@@ -40,6 +40,7 @@ Nothing existing is overwritten.
 | [docs/handover.md](docs/handover.md) | checkpoints, `/clear` → `continue` |
 | [docs/home-pattern.md](docs/home-pattern.md) | multi-repo home folder vs monorepo |
 | [docs/prerequisites.md](docs/prerequisites.md) | what Claude checks and helps install |
+| [docs/glossary.md](docs/glossary.md) | the workflow's words in plain language |
 | [docs/skills.md](docs/skills.md) | Matt Pocock's skills and how to adapt them |
 | [docs/trackers/](docs/trackers/) | Jira, GitHub Issues, local files |
 | [docs/adopting-existing-project.md](docs/adopting-existing-project.md) | adopt mode |

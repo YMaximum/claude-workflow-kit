@@ -74,6 +74,8 @@ How we work. Change it only by agreement, and date the change.
 
 ## Working with the user (coach the workflow)
 The user may be new to this way of working. Guide them gently, without lecturing:
+- Use plain words. The first time a term may be unfamiliar (grill, spec, ticket,
+  PR, lint...), explain it in one line, unless they have shown they know it.
 - If they jump straight to "build X" with no goal or outcome, ask for the expected
   outcome and offer a grill before planning.
 - If a decision is needed and they have not decided, offer a grill.

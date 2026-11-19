@@ -12,10 +12,18 @@ anything missing (SETUP step 6). Rules:
   is affected, use the fallback, and record it under **Waiting on the user** in
   `HANDOVER.md`.
 - Never run `sudo`, installers or system-wide changes yourself without asking.
+- Commands that need `sudo` (a password prompt) or open a browser: ask the user to
+  run them **in a separate terminal window**, not with `!`, then say "done".
+- Give **one step at a time** to a beginner, and say what success looks like
+  (e.g. "you should see `v20.x.x`").
 
 ## 0. Operating system and shell
-Check: `uname -s` (Linux/macOS), or the session's platform info. On Windows,
-Claude Code needs Git for Windows (Git Bash); WSL also works.
+Check the exact system, so every command you give fits it:
+- `uname -s` → `Linux`, `Darwin` (macOS), or a Windows shell (`MINGW*`/`MSYS*`).
+- Linux: `cat /etc/os-release` → `ID` / `ID_LIKE` (ubuntu, debian, linuxmint →
+  apt; fedora → dnf; arch → pacman).
+- macOS: `sw_vers -productVersion`; check `brew --version` (Homebrew).
+On Windows, Claude Code needs Git for Windows (Git Bash); WSL also works.
 - Windows without Git Bash or WSL: **user** installs Git for Windows
   (https://git-scm.com/download/win), then restarts Claude Code.
 - On Windows, prefer commands that work in Git Bash; avoid `/tmp` (use the session
@@ -49,7 +57,7 @@ then read the files locally.
 Match the stack (from the audit, or the user's answer in New mode):
 | Stack | Check | Install (user) |
 |---|---|---|
-| Node.js / npm | `node -v`, `npm -v` | https://nodejs.org (LTS), or a version manager (`nvm`, `fnm`); match `.nvmrc` / `engines` if present |
+| Node.js / npm | `node -v`, `npm -v` | see "Installing Node.js" below; match `.nvmrc` / `engines` if present |
 | pnpm / yarn | `pnpm -v` / `yarn -v` | `corepack enable` (ships with Node) |
 | Python | `python3 --version` | https://python.org, `brew install python`, or the distro package; plus `uv` or `pip` as the project uses |
 | Go | `go version` | https://go.dev/dl |
@@ -57,7 +65,24 @@ Match the stack (from the audit, or the user's answer in New mode):
 | .NET | `dotnet --version` | https://dotnet.microsoft.com/download |
 | Docker (if the project uses it) | `docker --version`, `docker ps` | Docker Desktop, or Docker Engine on Linux |
 Other stacks: find the version file (`.tool-versions`, `rust-toolchain`, ...) and
-the official installer.
+the official installer, and turn its instructions into exact commands for the
+user's system before giving them.
+
+### Installing Node.js (exact steps)
+- **Linux and macOS (recommended: nvm, no sudo needed).** In a terminal:
+  ```
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+  ```
+  Close and reopen the terminal (and restart Claude Code), then:
+  ```
+  nvm install --lts
+  node -v        # should print v22.x or newer
+  ```
+  If the nvm release in that URL is outdated, take the current install line from
+  https://github.com/nvm-sh/nvm#installing-and-updating.
+- **macOS with Homebrew:** `brew install node`.
+- **Windows:** `winget install OpenJS.NodeJS.LTS`, then restart Claude Code.
+- Restart Claude Code after installing so it sees the new `PATH`.
 
 Then check the project's commands actually run (Adopt mode): install dependencies
 (ask first), run the test command once. Record any that fail as **Gotchas**.

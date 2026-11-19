@@ -4,6 +4,10 @@
 steps in order. Talk with the user in the language they write in. Write no file
 until the plan in step 5 is approved.
 
+**Assume the user may be a beginner** until they show otherwise: plain words, one
+step at a time, and explain every kit term in one line the first time you use it
+(`docs/glossary.md`). Experienced users can say "skip the explanations".
+
 Get the kit first, into a scratch directory (not the user's project):
 ```
 git clone --depth 1 https://github.com/YMaximum/claude-workflow-kit <scratch>/claude-workflow-kit
@@ -20,7 +24,7 @@ answers win over the kit's examples. The kit's names (`APP-000`, `develop`,
 ---
 
 ## 1. Learn the workflow
-Read `GUIDE.md` fully, plus `docs/prerequisites.md`, `docs/workflow.md`, `docs/agent-routing.md` and
+Read `GUIDE.md` fully, plus `docs/glossary.md`, `docs/prerequisites.md`, `docs/workflow.md`, `docs/agent-routing.md` and
 `docs/handover.md`. Read the other docs only when they apply: the chosen tracker's
 `docs/trackers/*.md`, `docs/adopting-existing-project.md` in Adopt mode,
 `docs/home-pattern.md` in Home mode, `docs/skills.md` when mapping skills.
@@ -66,12 +70,17 @@ Then infer the project's conventions before you ask. Collect what exists:
 For a large project, delegate the reading to a cheap read-only subagent and ask
 for a short report. Show the user a short summary of what you inferred.
 
+Then, before the first question, give the user the five words they will hear most,
+one line each from `docs/glossary.md`: **grill, spec, ticket, commit, handover**.
+
 ## 4. Grill the user
 Ask with a recommended answer each time. Confirm inferences; ask only about gaps
 and conflicts. Stop when every row that applies has a value.
 
 To avoid over-asking: put rows with an obvious default (commit style, key prefix,
 date, language, models) into **one** message: "Here are my defaults; change any?"
+Explain each default in plain words; never ask a question the user cannot be
+expected to answer (e.g. model availability): state the default instead.
 Ask the real decisions (what to adopt, tracker, branching, tests, verification,
 global rules) one at a time. If the user answers ahead, take the answer and skip
 that question.
@@ -93,8 +102,8 @@ that question.
 | Repo shape (single, monorepo, home folder) | audit (sibling repos) + ask |
 | `{{ENV_DIR}}` | Home mode only: where canonical env files live outside the repos |
 | `{{PRODUCT_NAME}}` and the repo-map rows (`{{repo-api}}`, `{{stack}}`, ...) | Home mode only: one row per sibling repo, from its README, package files and `git branch -a` |
-| `{{CHEAP_MODEL}}` | the cheapest allowed model for the `scout`/`implementer` agents (default `haiku`) |
-| `{{SUBSCRIPTION_PLAN}}`, `{{EXCLUDED_MODELS}}` | ask: "Which models does your plan include? Any that bill extra?" Default: haiku, sonnet, opus allowed; none excluded |
+| `{{CHEAP_MODEL}}` | default `haiku` (the cheapest Claude model). Do not ask a beginner; if a subagent call later fails because the model is unavailable, switch to the cheapest model shown by `/model` |
+| `{{SUBSCRIPTION_PLAN}}`, `{{EXCLUDED_MODELS}}` | do not ask a beginner. Default: "the user's Claude plan", excluded "none known". Tell them: "type `/model` any time to see which models you have." Ask only users who mention plan limits or extra-billed models |
 | Global rules in `~/.claude/` or project-only | ask. Project-only: put the routing rules in the project `CLAUDE.md` and skip `model-reference.md` (or keep it at `docs/model-reference.md`) |
 | `HANDOVER.md` committed or per-developer | solo: committed. Team: recommend per-developer and gitignored (see `docs/handover.md`), with any shared status file kept as is |
 | Existing status file vs `HANDOVER.md` | ask, offering: (a) keep it as the shared team status and add a local `HANDOVER.md`; (b) replace it with `HANDOVER.md`; (c) keep only it and point the handover skill at it |
@@ -108,6 +117,8 @@ that question.
 ## 5. Present the plan
 List every action, one line each. Example (GitHub Issues, adopt mode):
 ```
+user    install prerequisites         only what is missing, e.g. "install Node LTS", "set git identity"
+user    connect the tracker           only what is missing, e.g. "install gh, then ! gh auth login"
 append  CLAUDE.md                     sections: Session start, Workflow agreement, Agent routing (diff shown)
 create  HANDOVER.md                   bootstrapped from open branches / uncommitted work / open PRs
 create  docs/tracker.md               from docs/trackers/github-issues.md, examples rewritten with real values
@@ -117,8 +128,6 @@ run     gh label create ready-for-agent / needs-triage / blocked
 append  ~/.claude/CLAUDE.md           orchestrator rules (only if chosen)
 create  ~/.claude/model-reference.md  with the user's models (only if chosen)
 user    install workflow skills       see step 6
-user    connect the tracker           only what is missing, e.g. "install gh, then ! gh auth login"
-user    install prerequisites         only what is missing, e.g. "install Node 20 LTS", "set git identity"
 commit  "chore: adopt claude workflow" on the agreed branch (asks first)
 ```
 Wait for approval. Adjust and re-present if asked.
@@ -126,7 +135,8 @@ Wait for approval. Adjust and re-present if asked.
 ## 6. Install
 **Prerequisites first.** For each item `docs/prerequisites.md` found missing:
 explain in one sentence what it is for, give the exact command or clicks for the
-user's OS, wait until they say it is done, and re-check. Ask before running any
+user's exact system (`docs/prerequisites.md` §0: distro, Homebrew, Windows), say
+what success looks like, wait until they say it is done, and re-check. Ask before running any
 install or `git config --global` yourself. If something cannot be fixed now, use
 the fallback in that doc and record it in `HANDOVER.md` under **Waiting on the
 user**. Continue with the rest of setup; do not stall.
@@ -166,8 +176,11 @@ Each repo's own `CLAUDE.md` keeps only its technical rules.
 **Workflow skills.** The user installs Matt Pocock's collection
 (https://github.com/mattpocock/skills). In Claude Code this is usually
 `/plugin marketplace add mattpocock/skills`, then installing it from `/plugin`;
-follow that repo's README if this differs. Afterwards, map the installed skill
-names to the four roles and fill the **Skills** table in `CLAUDE.md`:
+follow that repo's README if this differs. Then the user **restarts Claude Code**
+and types `/` to see the skill list; confirm the skills appear before relying on
+them. Map the installed skill names (they may carry a plugin prefix, e.g.
+`mattpocock-skills:grilling`) to the four roles and fill the **Skills** table in
+`CLAUDE.md`:
 
 | Role | Look for | If missing |
 |---|---|---|
@@ -193,6 +206,8 @@ own login, they run with a leading `!` (e.g. `! gh auth login`).
   connected yet, continue: keep specs and draft tickets in `HANDOVER.md` (or
   `docs/specs/`) and create the Jira issues once it is connected. Jira assigns issue
   keys; never invent one.
+- Tracker not ready (GitHub or Jira): follow the tracker doc's "not ready yet"
+  recipe (local drafts, `pending` status, exact next step in `HANDOVER.md`).
 
 **Commit.** If no git repo, `git init`. Commit the setup following the branching
 rule just agreed (its own PR if PRs are used). Approval of a plan that lists the
@@ -216,7 +231,9 @@ In a short message (in their language):
 1. The flow in one picture: describe → grill → spec → tickets → implement →
    review → (fixes → grill) → merge. Grill any time a decision is needed.
 2. The phrases they will use: "grill me", "implement <ticket>", "handover",
-   "continue" (and `/clear`). Point to the cheat sheet now in their `CLAUDE.md`.
+   "continue", and `/clear`, with why: long chats get slower and cost more, and
+   `HANDOVER.md` carries what matters into the fresh session. Point to the cheat
+   sheet now in their `CLAUDE.md`, and to `docs/glossary.md` words they asked about.
 3. What is still pending (prerequisites, tracker connection, plugin) and the exact
    next step for each.
 4. Offer to start their first real feature now.

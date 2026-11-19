@@ -38,9 +38,12 @@ Claude checks first and guides only through what is missing. Connecting is a
    the label names (`ready-for-agent`, `needs-triage`), and any custom field ids
    (story points, etc.) Claude must fill.
 
-If the user cannot connect now (waiting on an admin, no time), continue: keep the
-spec and draft tickets in `HANDOVER.md` or `docs/specs/`, refer to drafts by title,
-and create the Jira issues once connected.
+## Jira not ready yet (fallback recipe)
+If the user cannot connect now (waiting on an admin, no time), continue with local
+drafts: same recipe as GitHub's fallback (`docs/trackers/github-issues.md`), with
+`jira: pending` in the front matter and drafts referred to by title. When connected,
+create the issues, replace references to each draft with its returned key (e.g.
+`ABC-42`), then delete the drafts.
 
 ## Specs and keys
 - Specs: the epic (or parent issue) description; long specs may also live in
