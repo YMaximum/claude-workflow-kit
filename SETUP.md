@@ -41,7 +41,10 @@ Read `GUIDE.md` fully, plus `docs/glossary.md`, `docs/prerequisites.md`, `docs/w
 - **Adopt**: the folder has existing code, with or without a `CLAUDE.md`.
   Also read `docs/adopting-existing-project.md`.
 - **Home**: the user wants several repos under one parent folder
-  (`docs/home-pattern.md`). Combine with New or Adopt for each repo.
+  (`docs/home-pattern.md`). Each repo is handled as New or Adopt on its own (some
+  may already have a `CLAUDE.md`, some not). Each repo's `CLAUDE.md` stays the
+  team's contract; the home folder only adds the repo map, cross-repo rules,
+  routing, and the one `HANDOVER.md`.
 
 If the folder is not a git repo, plan a `git init` (step 5 lists it).
 
@@ -93,8 +96,14 @@ Follow `docs/codebase-map.md`.
   moved blocks with their destination. Apply only what the user approves (step 6).
 - **New mode:** no code to map. Discuss the app context only; `docs/codebase/`
   starts with the overview and glossary, and area files are created by tickets.
-- **Home mode:** map each repo into its own `docs/codebase/`; the home `CLAUDE.md`
-  routes to each repo's overview.
+- **Home mode:** do this step **per repo**, inside each repo:
+  - repo without `CLAUDE.md`: full adopt (app context for that repo, its map);
+  - repo with `CLAUDE.md`: the same statement-by-statement review as above;
+  - workflow rules stay in each repo (teammates may open it without your home
+    folder); never move them out to the home folder.
+  Then draft the product-level context (how the repos fit together) for the home
+  `CLAUDE.md`. Audit each repo's conventions; keep them per repo, and only point
+  out differences ("api branches from develop, ui commits to main: align?").
 
 ## 4. Grill the user
 Ask with a recommended answer each time. Confirm inferences; ask only about gaps
@@ -136,7 +145,8 @@ the answer and skip that question.
 | Tracker automation (does a branch/PR move tickets?) | ask (Jira / GitHub) |
 | Repo shape (single, monorepo, home folder) | audit (sibling repos) + ask |
 | `{{ENV_DIR}}` | Home mode only: where canonical env files live outside the repos |
-| `{{PRODUCT_NAME}}` and the repo-map rows (`{{repo-api}}`, `{{stack}}`, ...) | Home mode only: one row per sibling repo, from its README, package files and `git branch -a` |
+| `{{PRODUCT_NAME}}`, `{{PRODUCT_CONTEXT}}` | Home mode only: product name and 2-3 lines on how the repos fit together (step 3b) |
+| `{{REPO_MAP_ROWS}}` | Home mode only: one row per repo: role, stack, branching rule taken from that repo's `CLAUDE.md` |
 | `{{CHEAP_MODEL}}` | default `haiku` (the cheapest Claude model). Do not ask a beginner; if a subagent call later fails because the model is unavailable, switch to the cheapest model shown by `/model` |
 | `{{SUBSCRIPTION_PLAN}}`, `{{EXCLUDED_MODELS}}` | do not ask a beginner. Default: "the user's Claude plan", excluded "none known". Tell them: "type `/model` any time to see which models you have." Ask only users who mention plan limits or extra-billed models |
 | Global rules in `~/.claude/` or project-only | ask. Project-only: put the routing rules in the project `CLAUDE.md` and skip `model-reference.md` (or keep it at `docs/model-reference.md`) |
@@ -168,6 +178,11 @@ create  ~/.claude/model-reference.md  with the user's models (only if chosen)
 user    install workflow skills       see step 6
 commit  "chore: adopt claude workflow" on the agreed branch (asks first)
 ```
+Home mode: **one plan**, approved once, with a section per repo (its own lines as
+above, and its own setup branch/commit following that repo's rules) and a section
+for the home folder (`CLAUDE.md`, `HANDOVER.md`, `docs-claude/`, `.gitignore`,
+local `git init`).
+
 Wait for approval. Adjust and re-present if asked.
 
 ## 6. Install
@@ -224,9 +239,17 @@ the user agrees, because adding a file is itself a change to that folder. Nested
   plain scans".
 - `~/.claude/` files: same rules.
 
-**Home folder** (if chosen): first create the parent with `scaffold-home/CLAUDE.md`
-and the repo map, and put the workflow agreement there (it applies to all repos).
-Each repo's own `CLAUDE.md` keeps only its technical rules.
+**Home folder** (if chosen), in this order:
+1. Repo by repo: install as in a single repo (files, restructure, map), each with
+   its own setup branch and commit (or PR) per that repo's rules. Workflow rules
+   stay in each repo; do not move them to the home folder.
+2. Home: `scaffold-home/CLAUDE.md` with the repo map (branching per repo, read from
+   each repo's `CLAUDE.md`), `HANDOVER.md` (the only session state, a section per
+   repo), `docs-claude/`.
+3. Home in git, **local only**: `git init`, a `.gitignore` listing every repo
+   folder, commit. Never add a remote or push.
+4. Per-repo `HANDOVER.md` files are not created by a home setup (they are for
+   sessions started inside a repo, and gitignored there).
 
 **Workflow skills.** The user installs Matt Pocock's collection
 (https://github.com/mattpocock/skills). In Claude Code this is usually

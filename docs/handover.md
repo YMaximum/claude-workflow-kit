@@ -18,6 +18,8 @@ Template: `scaffold/HANDOVER.md`. Skill: `scaffold/.claude/skills/handover/`.
   every commit on every branch, so a committed copy causes merge conflicts and
   shows one person's half-finished state to everyone. Shared, team-facing status
   belongs in the tracker (or an existing shared status file), not here.
+- **Home folder (multi-repo):** one `HANDOVER.md` in the home folder is the only
+  session state while working from there, with branch and state per repo.
 - **Existing status file** (e.g. `docs/STATUS.md` that teammates read): usually
   keep it as the shared status and add a local `HANDOVER.md` for session state;
   the session-start rule then reads the shared file first, then `HANDOVER.md`.

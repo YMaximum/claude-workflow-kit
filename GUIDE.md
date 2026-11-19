@@ -127,7 +127,10 @@ Details: [docs/agent-routing.md](docs/agent-routing.md). Templates:
 
 ## 7. Multi-repo: the home pattern
 If the app spans several repos, start Claude in a parent "home" folder that holds
-the clones and a `CLAUDE.md` with the repo map. Claude then sees the whole system;
+the clones and a short `CLAUDE.md` with the repo map and cross-repo rules. Each
+repo keeps its own `CLAUDE.md` as the team's contract, so teammates who open a repo
+directly lose nothing; one `HANDOVER.md` at home covers all repos, and the home
+folder is a local-only git repo. Claude then sees the whole system;
 each repo keeps its own git history, branches and PRs. Or use a monorepo.
 Details: [docs/home-pattern.md](docs/home-pattern.md).
 

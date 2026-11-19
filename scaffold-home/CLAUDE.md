@@ -1,33 +1,39 @@
 # {{PRODUCT_NAME}}: home workspace
 
-This folder is **not** a git repo. It holds independent clones of the product's
-repos side by side, so one Claude session sees the whole system. Start Claude here.
+{{PRODUCT_CONTEXT}}
+<!-- 2-3 lines: what the product is, for whom, and how the repos fit together. -->
+
+This folder holds the product's repos side by side so one Claude session sees the
+whole system. Start Claude here. It is personal: teammates may open a repo directly,
+so **each repo's own `CLAUDE.md` is the contract** (workflow + its map). This file
+only adds the repo map, cross-repo rules and routing; it never overrides a repo.
+
+## Session start
+1. Read `HANDOVER.md` **in this folder**. It is the only session state while you
+   work from here (it covers every repo). Ignore per-repo `HANDOVER.md` files.
+2. Before working in a repo, read its `CLAUDE.md` and follow its rules (branching,
+   commits, tests). Claude Code also loads it when you open files there.
+3. Keep `HANDOVER.md` current after every commit and subagent result, with branch
+   and state per repo. On "handover", record and stop.
 
 ## Repo map
-| Folder | Role | Stack | Default / dev branch | Own rules |
+| Folder | Role | Stack | Branching (from its CLAUDE.md) | Read first |
 |---|---|---|---|---|
-| `{{repo-api}}/` | {{backend API}} | {{stack}} | `main` / `develop` | `{{repo-api}}/CLAUDE.md` |
-| `{{repo-ui}}/` | {{web client}} | {{stack}} | `main` / `develop` | `{{repo-ui}}/CLAUDE.md` |
-| `{{repo-infra}}/` | infra only, rarely changed | {{stack}} | `main` | none |
-
-Rule precedence: this file sets the **workflow**; a repo's own `CLAUDE.md` sets the
-**technical rules** for that repo and wins on technical questions. Read it before
-editing files in that repo.
-
-## Working files (live here, not in any repo)
-- `HANDOVER.md`: session state and next steps across all repos.
-- `docs-claude/`: specs, per-feature build trackers, decision notes.
-- Each repo keeps its own codebase map in `<repo>/docs/codebase/`; read
-  `<repo>/docs/codebase/README.md` before working in a repo you have not mapped.
-  A build tracker starts with "A fresh session reads this file first and continues
-  from **Next up**", and is updated at every step boundary.
+{{REPO_MAP_ROWS}}
+<!-- one row per repo, e.g.
+| `app-api/` | backend API | Node, Express | `ABC-n-slug` from `develop`, PR | `app-api/CLAUDE.md` |
+| `app-infra/` | infra only, rarely changed | Terraform | `main`, PR | `app-infra/CLAUDE.md` (or "none") | -->
 
 ## Cross-repo work
-- One plan, one ticket; one branch and one PR **per repo touched**, same branch name.
-- Every PR states the merge order (e.g. "merge api before ui").
-- Never stage with a blanket `git add -A` across repos; stage per repo.
-- Env files: never commit them; keep canonical copies outside the repos ({{ENV_DIR}}).
+- One plan and one ticket for a change that spans repos; one branch and one
+  commit/PR **per repo touched**, each following that repo's own rules.
+- Every PR (or ticket note) states the merge order, e.g. "merge api before ui".
+- Stage and commit inside each repo. Never `git add` across repos from here.
+- Env files: never commit them; canonical copies live outside the repos ({{ENV_DIR}}).
+- Specs and decisions that span repos: `docs-claude/`. Single-repo ones stay in
+  that repo's tracker.
 
-## Workflow agreement
-{{The workflow agreement section from scaffold/CLAUDE.md goes here, filled in by SETUP;
-  it applies to every repo.}}
+## This folder in git
+This folder is a **local-only** git repo (never add a remote, never push). Its
+`.gitignore` lists every repo folder, so only `CLAUDE.md`, `HANDOVER.md` and
+`docs-claude/` are versioned here. Commit after updating them.
