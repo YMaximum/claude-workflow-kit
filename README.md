@@ -8,6 +8,15 @@ multi-repo apps, and handover files so any session can resume with `continue`.
 Works for **new projects** and for **existing projects** that don't use it yet.
 Doubles as a scaffold for your next project.
 
+## Before you start
+You only need **Claude Code**, installed and logged in
+(https://claude.com/claude-code). On Windows, use it with Git Bash (Git for
+Windows) or WSL.
+
+Everything else (git, your project's runtime, `gh` for GitHub Issues, the Jira
+connector, test tools) Claude checks during setup, and walks you through
+installing whatever is missing. See [docs/prerequisites.md](docs/prerequisites.md).
+
 ## Quick start
 Open Claude Code in your project folder and say one of these:
 
@@ -30,6 +39,7 @@ Nothing existing is overwritten.
 | [docs/agent-routing.md](docs/agent-routing.md) | which agent/model does which task |
 | [docs/handover.md](docs/handover.md) | checkpoints, `/clear` → `continue` |
 | [docs/home-pattern.md](docs/home-pattern.md) | multi-repo home folder vs monorepo |
+| [docs/prerequisites.md](docs/prerequisites.md) | what Claude checks and helps install |
 | [docs/skills.md](docs/skills.md) | Matt Pocock's skills and how to adapt them |
 | [docs/trackers/](docs/trackers/) | Jira, GitHub Issues, local files |
 | [docs/adopting-existing-project.md](docs/adopting-existing-project.md) | adopt mode |

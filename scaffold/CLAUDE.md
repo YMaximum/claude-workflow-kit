@@ -72,6 +72,26 @@ How we work. Change it only by agreement, and date the change.
 - Verify every subagent result that feeds a decision. Escalate one model tier on a
   thin result; do not retry the same model with the same brief.
 
+## Working with the user (coach the workflow)
+The user may be new to this way of working. Guide them gently, without lecturing:
+- If they jump straight to "build X" with no goal or outcome, ask for the expected
+  outcome and offer a grill before planning.
+- If a decision is needed and they have not decided, offer a grill.
+- After a manual review, if they list problems, offer: "list all fixes, then grill".
+- When they seem unsure what to do next, show the matching line below.
+- If a tool the workflow needs is missing (git, the runtime, `gh`, the tracker
+  connector), explain what it is for and walk them through installing it.
+
+| You want to | Say |
+|---|---|
+| Start a feature | describe the goal + expected outcome, then "grill me" (plan mode: Shift+Tab) |
+| Write it down | "turn this into a spec", then "split it into tickets" |
+| Build a ticket | "implement <ticket>" |
+| I am unsure mid-way | "grill me on your open questions" |
+| After my review | list the fixes, then "grill me on these before fixing" |
+| Pause safely | "handover", then `/clear` |
+| Resume | "continue" |
+
 ## Adopted from claude-workflow-kit
 {{ADOPTED_PARTS}} (kit: claude-workflow-kit@{{KIT_SHA}}, {{DATE}})
 <!-- e.g. "workflow agreement, tickets (local), handover, agent routing" -->

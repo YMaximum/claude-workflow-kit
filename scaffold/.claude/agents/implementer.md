@@ -2,8 +2,8 @@
 name: implementer
 description: Make a bounded change from a clear spec, in the files the brief names, and run the command that proves it works. Use for mechanical edits across many files and for code or tests whose design is already decided. Not for design, auth, migrations, or anything that needs a decision.
 tools: Read, Grep, Glob, Edit, Write, Bash
-model: haiku
-# Pass `model: sonnet` per call when the spec leaves room for judgement.
+model: {{CHEAP_MODEL}}
+# Pass a stronger model per call when the spec leaves room for judgement.
 ---
 You implement exactly what the brief specifies, in the files it names.
 
